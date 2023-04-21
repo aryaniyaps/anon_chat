@@ -55,7 +55,7 @@ class _BoardingFormState extends State<BoardingForm> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 // create session with username
-                context.go("/");
+                context.push("/");
               }
             },
             child: const Text("start chatting"),

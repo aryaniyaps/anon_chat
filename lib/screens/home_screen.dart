@@ -25,11 +25,13 @@ class ChatRoom {
   String name;
   DateTime createdAt;
   int onlineCount;
+  bool enabled;
 
   ChatRoom({
     required this.name,
     required this.createdAt,
     required this.onlineCount,
+    required this.enabled,
     required this.id,
   });
 }
@@ -42,48 +44,56 @@ class ChatRoomList extends StatelessWidget {
       name: "Chat Room 1",
       createdAt: DateTime(2023, 4, 21, 12, 36),
       onlineCount: 2353,
+      enabled: true,
       id: "1001",
     ),
     ChatRoom(
       name: "Chat Room 2",
       createdAt: DateTime(2023, 4, 21, 12, 30),
       onlineCount: 78123,
+      enabled: true,
       id: "1002",
     ),
     ChatRoom(
       name: "Chat Room 3",
       createdAt: DateTime(2023, 4, 21, 10, 1),
       onlineCount: 435,
+      enabled: true,
       id: "1003",
     ),
     ChatRoom(
       name: "Chat Room 4",
       createdAt: DateTime(2023, 4, 21, 8, 57),
       onlineCount: 5123,
+      enabled: true,
       id: "1004",
     ),
     ChatRoom(
       name: "Chat Room 5",
       createdAt: DateTime(2023, 4, 21, 12, 24),
       onlineCount: 12,
+      enabled: true,
       id: "1005",
     ),
     ChatRoom(
       name: "Chat Room 6",
       createdAt: DateTime(2023, 4, 21, 11, 3),
       onlineCount: 1876,
+      enabled: true,
       id: "1006",
     ),
     ChatRoom(
       name: "Chat Room 7",
       createdAt: DateTime(2023, 4, 21, 6, 31),
       onlineCount: 378,
+      enabled: true,
       id: "1007",
     ),
     ChatRoom(
       name: "Chat Room 8",
       createdAt: DateTime(2023, 4, 21, 9, 43),
       onlineCount: 4322,
+      enabled: true,
       id: "1008",
     ),
   ];
