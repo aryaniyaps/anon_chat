@@ -2,7 +2,6 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
   "scripts": {
     "start:dev": "nodemon",
     "build": "rimraf ./dist && tsc",
@@ -29,7 +28,8 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "nanoid": "^4.0.2",
+    "joi": "^17.9.1",
+    "nanoid": "^3.0.0",
     "socket.io": "^4.6.1",
     "uuid": "^9.0.0"
   }

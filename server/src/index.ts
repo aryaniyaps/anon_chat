@@ -1,63 +1,27 @@
-import { nanoid } from 'nanoid';
-import http from 'node:http';
-import { Server } from 'socket.io';
-import { addUser } from './repo';
+import { Server, Socket } from 'socket.io';
 
-const server = http.createServer();
+import createChatRoom from './handlers/create-chatroom';
+import createMessage from './handlers/create-message';
+import createUser from './handlers/create-user';
+import joinChatroom from './handlers/join-chatroom';
+import listMessages from './handlers/list-messages';
+import refreshUsername from './handlers/refresh-username';
 
-const io = new Server(server);
+const io = new Server();
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
-
-  socket.on('disconnect', () => {
-    console.log('a user disconnected');
-  });
-
-  const username = nanoid();
-  // send initial user ID
-  socket.send(
-    JSON.stringify({
-      userId: nanoid()
-    })
-  );
-
-  // save user
-  addUser({ username });
-
-  socket.on('message', (data) => {
-    const packet = JSON.parse(data);
-
-    switch (packet.command) {
-      case 'regenerate-userid':
-        socket.send(
-          JSON.stringify({
-            userId: nanoid()
-          })
-        );
-        break;
-
-      case 'create-chatroom':
-        break;
-
-      case 'create-message':
-        break;
-
-      case 'update-message':
-        break;
-
-      default:
-        socket.send(
-          JSON.stringify({
-            message: 'incorrect command.'
-          })
-        );
-    }
-  });
+  console.log(`${socket.id} connected`);
+  registerEventHandlers(socket);
 });
 
-console.log('Hello word!');
+function registerEventHandlers(socket: Socket): void {
+  socket.on('username:refresh', refreshUsername);
+  socket.on('users:create', createUser);
+  socket.on('chatrooms:create', createChatRoom);
+  socket.on('chatrooms:join', joinChatroom);
+  socket.on('messages:list', listMessages);
+  socket.on('messages:create', createMessage);
+}
 
-server.listen(3000, () => {
-  console.log('listening at 3000');
-});
+io.listen(3000);
+console.log('listening at 3000 🚀');
