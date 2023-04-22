@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: "/chatrooms/:id",
         builder: (context, state) {
-          debugPrint(state.params.toString());
           return ChatRoomScreen(
             chatRoomId: state.params["id"]!,
           );
