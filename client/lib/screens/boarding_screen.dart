@@ -1,3 +1,4 @@
+import 'package:anon_chat/core/supabase_client.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -52,9 +53,10 @@ class _BoardingFormState extends State<BoardingForm> {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                // create session with username
+                // create user with username
+                await supabase.from("users").insert({"username": ""});
                 context.push("/");
               }
             },
