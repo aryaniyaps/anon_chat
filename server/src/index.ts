@@ -1,14 +1,19 @@
-import { WebSocketServer } from 'ws';
+import http from 'node:http';
+import { Server } from 'socket.io';
 
-const wss = new WebSocketServer({ port: 3000 });
+const server = http.createServer();
 
-wss.on('connection', (ws, req) => {
-  ws.on('error', console.error);
+const io = new Server(server);
 
-  ws.on('message', (data) => {
-    console.log('received: ', data);
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('a user disconnected');
   });
+});
 
-  const ipAddress = req.socket.remoteAddress;
-  ws.send(`hello ${ipAddress}!`);
+console.log('Hello word!');
+
+server.listen(3000, () => {
+  console.log('listening at 3000');
 });
