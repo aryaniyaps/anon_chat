@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         path: "/chatrooms/:id",
         builder: (context, state) {
           return ChatRoomScreen(
+            key: state.pageKey,
             chatRoomId: state.params["id"]!,
           );
         },
