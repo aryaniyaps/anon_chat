@@ -1,20 +1,20 @@
 import { Socket } from 'socket.io';
-import { ValidationError, object, string } from 'yup';
+import { ValidationError, object } from 'yup';
 
-const schema = object({
-  username: string().max(25).required()
-});
+import { chatrooms } from '../data';
 
-export default async function loginUser(
+const schema = object({});
+
+export default async function listChatrooms(
   this: Socket,
   payload: any,
   callback: CallableFunction
 ) {
   try {
-    const data = await schema.validate(payload);
-    this.data.username = data.username;
+    await schema.validate(payload);
     callback({
-      status: 'OK'
+      status: 'OK',
+      data: chatrooms
     });
   } catch (error) {
     if (error instanceof ValidationError) {

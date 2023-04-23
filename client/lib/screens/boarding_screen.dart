@@ -45,6 +45,7 @@ class _LoginFormState extends State<LoginForm> {
               labelText: 'Username',
               hintText: "Don't enter your real name!",
             ),
+            maxLength: 25,
           ),
           const SizedBox(
             height: 20,
