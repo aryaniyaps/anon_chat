@@ -1,7 +1,5 @@
-import 'package:anon_chat/core/supabase_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:go_router/go_router.dart';
 
 class BoardingScreen extends StatelessWidget {
   const BoardingScreen({super.key});
@@ -11,64 +9,42 @@ class BoardingScreen extends StatelessWidget {
     return const Scaffold(
       body: Padding(
         padding: EdgeInsets.all(32),
-        child: BoardingForm(),
+        child: LoginForm(),
       ),
     );
   }
 }
 
-class BoardingForm extends StatefulWidget {
-  const BoardingForm({super.key});
+class LoginForm extends StatefulWidget {
+  const LoginForm({super.key});
 
   @override
-  State<BoardingForm> createState() => _BoardingFormState();
+  State<LoginForm> createState() => _LoginFormState();
 }
 
-class _BoardingFormState extends State<BoardingForm> {
+class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  void boardUser() {
+  void boardUser() async {
     if (_formKey.currentState!.validate()) {
       var result = _formKey.currentState!.value;
-      // create user
-      supabase.from("users").insert(
-        {
-          "username": result["username"],
-        },
-      ).then((_) {
-        context.push("/");
-      });
+      // board user here
     }
-  }
-
-  void refreshUsername() {
-    // regenerate username here
-    var username = _formKey.currentState!.fields["username"];
-    username!.didChange("initial-username");
   }
 
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _formKey,
-      initialValue: const {
-        "username": "initial-username",
-      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FormBuilderTextField(
-            name: "username",
-            decoration: InputDecoration(
+            name: "Username",
+            decoration: const InputDecoration(
               labelText: 'Username',
-              hintText: "Don't use your real name!",
-              suffixIcon: IconButton(
-                onPressed: refreshUsername,
-                icon: const Icon(Icons.refresh),
-              ),
+              hintText: "Don't enter your real name!",
             ),
-            enableSuggestions: false,
-            maxLength: 25,
           ),
           const SizedBox(
             height: 20,

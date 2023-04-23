@@ -3,15 +3,8 @@ import 'package:anon_chat/screens/chat_room_screen.dart';
 import 'package:anon_chat/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // initialize supabase
-  await Supabase.initialize(
-    url: const String.fromEnvironment("API_KEY"),
-    anonKey: const String.fromEnvironment("ANON_KEY"),
-  );
+void main() {
   runApp(MyApp());
 }
 
