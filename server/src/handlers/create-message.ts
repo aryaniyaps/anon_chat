@@ -25,7 +25,7 @@ export default async function createMessage(
       chatroomId: chatroom.id,
       username: this.data.username
     };
-    chatroom?.messages.push(message);
+    chatroom.messages.push(message);
 
     // broadcast message
     this.to(chatroom.id).emit('messages:create', message);
