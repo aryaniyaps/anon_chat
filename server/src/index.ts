@@ -16,6 +16,9 @@ const io = new Server(server);
 
 io.on('connection', (socket) => {
   console.log(`💡 socket ${socket.id} connected`);
+  socket.on('disconnect', () => {
+    console.log(`⭕ socket ${socket.id} disconnected`);
+  });
   registerMiddleware(socket);
   registerEventHandlers(socket);
 });
