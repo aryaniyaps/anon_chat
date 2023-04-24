@@ -15,6 +15,12 @@ export default async function listMessages(
   try {
     const data = await schema.validate(payload);
     const chatroom = chatrooms.get(data.roomId);
+    if (!chatroom) {
+      return callback({
+        status: 'Invalid Payload',
+        message: `Chatroom with ID ${data.roomId} doesn't exist.`
+      });
+    }
 
     callback({
       status: 'OK',

@@ -1,15 +1,14 @@
 import { Socket } from 'socket.io';
+import { v4 } from 'uuid';
 import { ValidationError, object, string } from 'yup';
 
-import { v4 } from 'uuid';
 import { Message, chatrooms } from '../data';
 
 const schema = object({
-  roomId: string().uuid().required(),
-  content: string().max(250).required()
+  roomId: string().uuid().required()
 });
 
-export default async function createMessage(
+export default async function leaveChatroom(
   this: Socket,
   payload: any,
   callback: CallableFunction
@@ -25,22 +24,20 @@ export default async function createMessage(
       });
     }
 
-    // create message
+    // join room
+    this.leave(chatroom.id);
+
+    // emit message
     const message: Message = {
       id: v4(),
-      content: data.content,
+      content: `${this.data.username} left the room.`,
       chatroomId: chatroom.id,
-      username: this.data.username,
-      isServer: false
+      isServer: true
     };
-    chatroom.messages.push(message);
-
-    // broadcast message
     this.to(chatroom.id).emit('messages:create', message);
 
     callback({
-      status: 'OK',
-      data: message
+      status: 'OK'
     });
   } catch (error) {
     if (error instanceof ValidationError) {

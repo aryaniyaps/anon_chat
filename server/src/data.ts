@@ -2,7 +2,8 @@ type Message = {
   id: string;
   chatroomId: string;
   content: string;
-  username: string;
+  username?: string;
+  isServer: boolean;
 };
 
 type ChatRoom = {

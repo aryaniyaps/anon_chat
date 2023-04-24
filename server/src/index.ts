@@ -1,3 +1,7 @@
+import 'dotenv-safe/config';
+
+import { createServer } from 'node:http';
+
 import { Server, Socket } from 'socket.io';
 
 import createChatroom from './handlers/create-chatroom';
@@ -7,10 +11,12 @@ import listChatrooms from './handlers/list-chatrooms';
 import listMessages from './handlers/list-messages';
 import loginUser from './handlers/login-user';
 
-const io = new Server();
+const server = createServer();
+const io = new Server(server);
 
 io.on('connection', (socket) => {
-  console.log(`${socket.id} connected`);
+  console.log(`💡 socket ${socket.id} connected`);
+  registerMiddleware(socket);
   registerEventHandlers(socket);
 });
 
@@ -23,7 +29,8 @@ function registerEventHandlers(socket: Socket): void {
   socket.on('messages:create', createMessage);
 }
 
-const port = process.env['PORT']!;
+function registerMiddleware(socket: Socket): void {}
 
-io.listen(parseInt(port));
-console.log(`listening at ${port} 🚀`);
+server.listen(parseInt(process.env.PORT!), () => {
+  console.log(`🚀 listening at ${process.env.PORT!}`);
+});

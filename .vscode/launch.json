@@ -2,7 +2,7 @@
 	"configurations": [
 		{
 			// A name for the launch config. This will show in the dropdown on the Run side bar.
-			"name": "Flutter app",
+			"name": "Flutter debug",
 
 			// This should always be "dart" for Dart/Flutter apps.
 			// This selects the Dart debugger.
@@ -12,7 +12,12 @@
 			"request": "launch",
 
 			// The directory to start running the app from.
-			"cwd": "/client",
+			"cwd": "${workspaceFolder}/client",
+
+			// The entry script to execute when running the app.
+			// Set to a "web" in a Dart web app to run in web move.
+			// Set to "test" in an app with tests to run all tests.
+			"program": "lib/main.dart",
 			
 			// Arguments to be passed to the Dart or Flutter tool.
 			// 
@@ -21,6 +26,7 @@
 			//     dart (vmAdditionalArgs) run (toolArgs) bin/main.dart (args)
 			//     flutter run (toolArgs) -t lib/main.dart (args)
 			"toolArgs": [
+				// "--dart-define", "API_URL=http://10.0.2.2:3000",
 				"--dart-define-from-file", "config.json",
 			],
 
