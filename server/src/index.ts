@@ -7,6 +7,7 @@ import { Server, Socket } from 'socket.io';
 import createChatroom from './handlers/create-chatroom';
 import createMessage from './handlers/create-message';
 import joinChatroom from './handlers/join-chatroom';
+import leaveChatroom from './handlers/leave-chatroom';
 import listChatrooms from './handlers/list-chatrooms';
 import listMessages from './handlers/list-messages';
 import loginUser from './handlers/login-user';
@@ -28,6 +29,7 @@ function registerEventHandlers(socket: Socket): void {
   socket.on('chatrooms:create', createChatroom);
   socket.on('chatrooms:list', listChatrooms);
   socket.on('chatrooms:join', joinChatroom);
+  socket.on('chatrooms:leave', leaveChatroom);
   socket.on('messages:list', listMessages);
   socket.on('messages:create', createMessage);
 }
