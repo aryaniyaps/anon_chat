@@ -1,6 +1,6 @@
 import Router from '@koa/router';
 
-import { addChatRoomSchema, addMessageSchema } from '../schemas';
+import { addChatRoomSchema, addMessageSchema } from './schema';
 import service from './service';
 
 const router = new Router({ prefix: '/chatrooms' });

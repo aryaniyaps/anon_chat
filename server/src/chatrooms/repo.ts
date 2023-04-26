@@ -4,12 +4,13 @@ import { ChatRoom } from './types';
 
 const chatRooms = new Map<string, ChatRoom>();
 
-function addChatRoom(data: { name: string }): void {
-  const roomId = v4();
-  chatRooms.set(roomId, {
-    id: roomId,
+function addChatRoom(data: { name: string }): ChatRoom {
+  const chatRoom: ChatRoom = {
+    id: v4(),
     name: data.name
-  });
+  };
+  chatRooms.set(chatRoom.id, chatRoom);
+  return chatRoom;
 }
 
 function getChatRooms(): ChatRoom[] {

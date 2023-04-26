@@ -1,9 +1,16 @@
 import { createClient } from 'redis';
+import { Server } from 'socket.io';
 
-const client = createClient();
+const publisher = createClient();
 
-const subscriber = client.duplicate();
+const subscriber = publisher.duplicate();
 
 // subscribe to events
 
-export { client, subscriber };
+function registerEvents(server: Server): void {
+  subscriber.on('message', function (channel, message) {
+    server.emit(channel, message);
+  });
+}
+
+export { publisher, registerEvents };

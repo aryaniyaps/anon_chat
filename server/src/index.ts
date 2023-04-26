@@ -8,6 +8,7 @@ import { Server as SocketIOServer } from 'socket.io';
 
 import router from './chatrooms/router';
 import errorHandler from './core/middleware/error-handler';
+import { registerEvents } from './core/pubsub';
 
 function main(): void {
   const app = createApp();
@@ -28,16 +29,12 @@ function createApp(): Koa {
 
 function createSocketIOServer(httpServer: Server): SocketIOServer {
   const io = new SocketIOServer(httpServer);
-  registerEventHandlers(io);
+  registerEvents(io);
   return io;
 }
 
 function registerRoutes(app: Koa): void {
   app.use(router.routes()).use(router.allowedMethods());
-}
-
-function registerEventHandlers(server: SocketIOServer): void {
-  server.on('connection', (socket) => {});
 }
 
 main();
