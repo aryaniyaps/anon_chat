@@ -2,12 +2,12 @@ class Message {
   String id;
   String content;
   DateTime createdAt;
-  String sentBy;
+  String ownerId;
 
   Message({
     required this.id,
     required this.content,
     required this.createdAt,
-    required this.sentBy,
+    required this.ownerId,
   });
 }

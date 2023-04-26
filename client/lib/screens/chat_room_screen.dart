@@ -1,5 +1,7 @@
-import 'package:anon_chat/screens/home_screen.dart';
+import 'package:anon_chat/models/message.dart';
+import 'package:anon_chat/repository.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ChatRoomScreen extends StatefulWidget {
@@ -12,39 +14,22 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  final _chatRoom = ChatRoom(
-    name: "Chat Room 1",
-    createdAt: DateTime(2023, 4, 21, 12, 36),
-    onlineCount: 2353,
-    enabled: true,
-    id: "1001",
-  );
-
   @override
   Widget build(BuildContext context) {
+    final chatRoom = repo.getChatRoom(
+      widget.chatRoomId,
+    );
     return Scaffold(
       appBar: AppBar(
-        title: SizedBox(
-          height: 30,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(_chatRoom.name),
-              const VerticalDivider(),
-              Text(
-                "${_chatRoom.onlineCount} online",
-                style: const TextStyle(fontSize: 16.0),
-              )
-            ],
-          ),
+        title: Text(chatRoom.name),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // leave chatroom with ID
+            repo.leaveChatRoom(widget.chatRoomId);
+            context.pop();
+          },
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.people_sharp),
-          )
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -60,13 +45,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             color: Colors.white,
             child: Row(
               children: <Widget>[
-                Expanded(
+                const Expanded(
                   child: TextField(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "Send a message...",
                       border: InputBorder.none,
                     ),
-                    enabled: _chatRoom.enabled,
                   ),
                 ),
                 const SizedBox(
@@ -93,22 +77,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 }
 
-class Message {
-  String id;
-  String content;
-  DateTime createdAt;
-  String sentBy;
-
-  Message({
-    required this.id,
-    required this.content,
-    required this.createdAt,
-    required this.sentBy,
-  });
-}
-
 class MessageList extends StatefulWidget {
-  MessageList({super.key});
+  const MessageList({super.key});
 
   @override
   State<MessageList> createState() => _MessageListState();
@@ -120,55 +90,55 @@ class _MessageListState extends State<MessageList> {
       id: "1001",
       content: "message 1",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1002",
       content: "message 2",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1003",
       content: "message 3",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1004",
       content: "message 4",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1005",
       content: "message 5",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1006",
       content: "message 6",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1007",
       content: "message 7",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1008",
       content: "message 8",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
     Message(
       id: "1009",
       content: "message 9",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      sentBy: "username",
+      ownerId: "owner ID",
     ),
   ];
 
@@ -213,7 +183,7 @@ class _MessageListState extends State<MessageList> {
               height: 20,
               child: Row(
                 children: [
-                  Text(message.sentBy),
+                  Text(message.ownerId),
                   const VerticalDivider(),
                   Text(timeago.format(message.createdAt)),
                 ],

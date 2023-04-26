@@ -1,3 +1,5 @@
+import 'package:anon_chat/models/chatroom.dart';
+import 'package:anon_chat/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -20,22 +22,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class ChatRoom {
-  String id;
-  String name;
-  DateTime createdAt;
-  int onlineCount;
-  bool enabled;
-
-  ChatRoom({
-    required this.name,
-    required this.createdAt,
-    required this.onlineCount,
-    required this.enabled,
-    required this.id,
-  });
-}
-
 class ChatRoomList extends StatelessWidget {
   ChatRoomList({super.key});
 
@@ -43,70 +29,60 @@ class ChatRoomList extends StatelessWidget {
     ChatRoom(
       name: "Chat Room 1",
       createdAt: DateTime(2023, 4, 21, 12, 36),
-      onlineCount: 2353,
-      enabled: true,
       id: "1001",
     ),
     ChatRoom(
       name: "Chat Room 2",
       createdAt: DateTime(2023, 4, 21, 12, 30),
-      onlineCount: 78123,
-      enabled: true,
       id: "1002",
     ),
     ChatRoom(
       name: "Chat Room 3",
       createdAt: DateTime(2023, 4, 21, 10, 1),
-      onlineCount: 435,
-      enabled: true,
       id: "1003",
     ),
     ChatRoom(
       name: "Chat Room 4",
       createdAt: DateTime(2023, 4, 21, 8, 57),
-      onlineCount: 5123,
-      enabled: true,
       id: "1004",
     ),
     ChatRoom(
       name: "Chat Room 5",
       createdAt: DateTime(2023, 4, 21, 12, 24),
-      onlineCount: 12,
-      enabled: true,
       id: "1005",
     ),
     ChatRoom(
       name: "Chat Room 6",
       createdAt: DateTime(2023, 4, 21, 11, 3),
-      onlineCount: 1876,
-      enabled: true,
       id: "1006",
     ),
     ChatRoom(
       name: "Chat Room 7",
       createdAt: DateTime(2023, 4, 21, 6, 31),
-      onlineCount: 378,
-      enabled: true,
       id: "1007",
     ),
     ChatRoom(
       name: "Chat Room 8",
       createdAt: DateTime(2023, 4, 21, 9, 43),
-      onlineCount: 4322,
-      enabled: true,
       id: "1008",
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    if (_chatRooms.isEmpty) {
+      return const Center(
+        child: Text("no rooms created."),
+      );
+    }
     return ListView.separated(
       itemCount: _chatRooms.length,
       itemBuilder: (context, index) {
         var chatRoom = _chatRooms[index];
         return InkWell(
           onTap: () {
-            // navigate to chatroom screen
+            // join chatroom with ID
+            repo.createChatRoom(chatRoom.id);
             context.push("/chatrooms/${chatRoom.id}");
           },
           child: ListTile(
@@ -114,15 +90,8 @@ class ChatRoomList extends StatelessWidget {
             title: Text(chatRoom.name),
             subtitle: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: SizedBox(
-                height: 20,
-                child: Row(
-                  children: [
-                    Text(timeago.format(chatRoom.createdAt)),
-                    const VerticalDivider(),
-                    Text("${chatRoom.onlineCount.toString()} online")
-                  ],
-                ),
+              child: Text(
+                "created ${timeago.format(chatRoom.createdAt)}",
               ),
             ),
           ),

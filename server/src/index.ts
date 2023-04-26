@@ -1,41 +1,43 @@
 import 'dotenv-safe/config';
 
-import { createServer } from 'node:http';
+import { createServer, Server } from 'node:http';
 
-import { Server, Socket } from 'socket.io';
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import { Server as SocketIOServer } from 'socket.io';
 
-import createChatroom from './handlers/create-chatroom';
-import createMessage from './handlers/create-message';
-import joinChatroom from './handlers/join-chatroom';
-import leaveChatroom from './handlers/leave-chatroom';
-import listChatrooms from './handlers/list-chatrooms';
-import listMessages from './handlers/list-messages';
-import loginUser from './handlers/login-user';
+import router from './chatrooms/router';
+import errorHandler from './core/middleware/error-handler';
 
-const server = createServer();
-const io = new Server(server);
-
-io.on('connection', (socket) => {
-  console.log(`💡 socket ${socket.id} connected`);
-  socket.on('disconnect', () => {
-    console.log(`⭕ socket ${socket.id} disconnected`);
+function main(): void {
+  const app = createApp();
+  const httpServer = createServer(app.callback());
+  createSocketIOServer(httpServer);
+  httpServer.listen(parseInt(process.env.PORT!), () => {
+    console.log(`🚀 listening at ${process.env.PORT!}`);
   });
-  registerMiddleware(socket);
-  registerEventHandlers(socket);
-});
-
-function registerEventHandlers(socket: Socket): void {
-  socket.on('users:login', loginUser);
-  socket.on('chatrooms:create', createChatroom);
-  socket.on('chatrooms:list', listChatrooms);
-  socket.on('chatrooms:join', joinChatroom);
-  socket.on('chatrooms:leave', leaveChatroom);
-  socket.on('messages:list', listMessages);
-  socket.on('messages:create', createMessage);
 }
 
-function registerMiddleware(socket: Socket): void {}
+function createApp(): Koa {
+  const app = new Koa();
+  app.use(bodyParser());
+  app.use(errorHandler);
+  registerRoutes(app);
+  return app;
+}
 
-server.listen(parseInt(process.env.PORT!), () => {
-  console.log(`🚀 listening at ${process.env.PORT!}`);
-});
+function createSocketIOServer(httpServer: Server): SocketIOServer {
+  const io = new SocketIOServer(httpServer);
+  registerEventHandlers(io);
+  return io;
+}
+
+function registerRoutes(app: Koa): void {
+  app.use(router.routes()).use(router.allowedMethods());
+}
+
+function registerEventHandlers(server: SocketIOServer): void {
+  server.on('connection', (socket) => {});
+}
+
+main();
