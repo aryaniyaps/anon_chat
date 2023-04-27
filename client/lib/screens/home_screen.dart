@@ -121,12 +121,7 @@ class _CreateRoomFormState extends State<CreateRoomForm> {
           FormBuilderTextField(
             name: "name",
             maxLength: 25,
-            validator: FormBuilderValidators.compose(
-              [
-                FormBuilderValidators.required(),
-                FormBuilderValidators.maxLength(25),
-              ],
-            ),
+            validator: FormBuilderValidators.required(),
             decoration: const InputDecoration(
               labelText: "room name",
               hintText: "What should we call your room?",
