@@ -33,7 +33,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.dispose();
   }
 
-  void loadChatRoom() async {
+  Future<void> loadChatRoom() async {
     var result = await client.getChatRoom(roomId: widget.chatRoomId);
     setState(() {
       _chatRoom = result;
