@@ -1,4 +1,4 @@
-import 'package:anon_chat/core/api_client.dart';
+import 'package:anon_chat/core/http_client.dart';
 import 'package:anon_chat/models/chatroom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -47,7 +47,7 @@ class _ChatRoomListState extends State<ChatRoomList> {
   }
 
   Future<void> loadChatRooms() async {
-    var result = await client.getChatRooms();
+    var result = await httpClient.getChatRooms();
     setState(() {
       _chatRooms = result;
     });
@@ -132,7 +132,7 @@ class _CreateRoomFormState extends State<CreateRoomForm> {
             onPressed: () async {
               if (_formKey.currentState!.saveAndValidate()) {
                 var result = _formKey.currentState!.value;
-                var chatRoom = await client.createChatRoom(
+                var chatRoom = await httpClient.createChatRoom(
                   name: result["name"],
                 );
                 // reset text field.

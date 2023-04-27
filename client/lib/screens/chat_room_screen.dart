@@ -1,4 +1,4 @@
-import 'package:anon_chat/core/api_client.dart';
+import 'package:anon_chat/core/http_client.dart';
 import 'package:anon_chat/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,14 +34,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> loadChatRoom() async {
-    var result = await client.getChatRoom(roomId: widget.chatRoomId);
+    var result = await httpClient.getChatRoom(roomId: widget.chatRoomId);
     setState(() {
       _chatRoom = result;
     });
   }
 
   void sendMessage() async {
-    await client.createMessage(
+    await httpClient.createMessage(
       roomId: _chatRoom!.id,
       content: _messageController.value.toString(),
     );

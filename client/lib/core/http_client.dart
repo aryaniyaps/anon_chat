@@ -2,7 +2,7 @@ import 'package:anon_chat/models/chatroom.dart';
 import 'package:anon_chat/models/message.dart';
 import 'package:dio/dio.dart';
 
-class Client {
+class HTTPClient {
   final _dio = Dio(
     BaseOptions(
       baseUrl: const String.fromEnvironment(
@@ -53,4 +53,4 @@ class Client {
   }
 }
 
-final client = Client();
+final httpClient = HTTPClient();
