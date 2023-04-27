@@ -51,7 +51,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     if (_chatRoom == null) {
-      return const Scaffold(
+      return Scaffold(
         body: Container(),
       );
     }
