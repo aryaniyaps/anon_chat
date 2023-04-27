@@ -52,9 +52,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     if (_chatRoom == null) {
       return const Scaffold(
-        body: Center(
-          child: Text("loading room."),
-        ),
+        body: Container(),
       );
     }
     return Scaffold(
