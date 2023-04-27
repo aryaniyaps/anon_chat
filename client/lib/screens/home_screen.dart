@@ -56,9 +56,8 @@ class _ChatRoomListState extends State<ChatRoomList> {
   @override
   Widget build(BuildContext context) {
     if (_chatRooms.isEmpty) {
-      return const Center(
-        child: Text("no rooms created."),
-      );
+      // placeholder widget
+      return Container();
     }
     return ListView.separated(
       itemCount: _chatRooms.length,
