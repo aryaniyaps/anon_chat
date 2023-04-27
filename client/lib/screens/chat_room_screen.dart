@@ -1,8 +1,10 @@
+import 'package:anon_chat/core/api_client.dart';
 import 'package:anon_chat/models/message.dart';
-import 'package:anon_chat/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '../models/chatroom.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   final String chatRoomId;
@@ -14,19 +16,54 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
+  ChatRoom? _chatRoom;
+
+  final _messageController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadChatRoom();
+  }
+
+  @override
+  void dispose() {
+    // clean up controller
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  void loadChatRoom() async {
+    var result = await client.getChatRoom(roomId: widget.chatRoomId);
+    setState(() {
+      _chatRoom = result;
+    });
+  }
+
+  void sendMessage() async {
+    await client.createMessage(
+      roomId: _chatRoom!.id,
+      content: _messageController.value.toString(),
+    );
+    _messageController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final chatRoom = repo.getChatRoom(
-      widget.chatRoomId,
-    );
+    if (_chatRoom == null) {
+      return const Scaffold(
+        body: Center(
+          child: Text("loading room."),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(chatRoom.name),
+        title: Text(_chatRoom!.name),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // leave chatroom with ID
-            repo.leaveChatRoom(widget.chatRoomId);
             context.pop();
           },
         ),
@@ -45,9 +82,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             color: Colors.white,
             child: Row(
               children: <Widget>[
-                const Expanded(
+                Expanded(
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
                       hintText: "Send a message...",
                       border: InputBorder.none,
                     ),
@@ -57,9 +95,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   width: 15,
                 ),
                 FloatingActionButton(
-                  onPressed: () {
-                    // scroll down the messageScrollController here
-                  },
+                  onPressed: sendMessage,
                   // remove shadow
                   elevation: 0,
                   child: const Icon(
@@ -85,62 +121,7 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
-  final _messages = <Message>[
-    Message(
-      id: "1001",
-      content: "message 1",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1002",
-      content: "message 2",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1003",
-      content: "message 3",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1004",
-      content: "message 4",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1005",
-      content: "message 5",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1006",
-      content: "message 6",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1007",
-      content: "message 7",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1008",
-      content: "message 8",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-    Message(
-      id: "1009",
-      content: "message 9",
-      createdAt: DateTime(2023, 4, 21, 12, 36),
-      ownerId: "owner ID",
-    ),
-  ];
+  final _messages = <Message>[];
 
   late ScrollController _scrollController;
 

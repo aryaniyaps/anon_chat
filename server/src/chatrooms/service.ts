@@ -1,10 +1,11 @@
 import { publisher } from '../core/pubsub';
 import repo from './repo';
-import { ChatRoom } from './types';
+import { ChatRoom, Message } from './types';
 
-async function addChatRoom(input: { name: string }): Promise<void> {
+function addChatRoom(input: { name: string }): ChatRoom {
   const chatRoom = repo.addChatRoom({ name: input.name });
   publisher.publish('chatrooms:create', JSON.stringify(chatRoom));
+  return chatRoom;
 }
 
 function getChatRooms(): ChatRoom[] {
@@ -15,13 +16,19 @@ function getChatRoom(input: { roomId: string }): ChatRoom {
   return repo.getChatRoom({ roomId: input.roomId });
 }
 
-async function addMessage(input: {
+function addMessage(input: {
   content: string;
   ownerId: string;
   roomId: string;
-}): Promise<void> {
+}): Message {
+  const message = repo.addMessage({
+    content: input.content,
+    ownerId: input.ownerId,
+    roomId: input.roomId
+  });
   // pub message
-  publisher.publish('messages:create', JSON.stringify(input));
+  publisher.publish('messages:create', JSON.stringify(message));
+  return message;
 }
 export default {
   addChatRoom,

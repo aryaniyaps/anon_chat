@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  server:
+    build:
+      context: "./server"
+      target: "development"
+    restart: on-failure
+    environment:
+      - PORT=3000
+      - REDIS_URL=redis://:anon_chat@database:6379/0
+    ports:
+      - "3000:3000"
+    networks:
+      - server
+    depends_on:
+      - database
+
+  database:
+    image: bitnami/redis:7.0
+    restart: unless-stopped
+    environment:
+      - REDIS_PASSWORD=anon_chat
+    ports:
+      - "6379:6379"
+    networks:
+      - server
+    volumes:
+      - default:/bitnami/redis/data
+
+volumes:
+  default:
+    driver: local
+
+networks:
+  server:
+    driver: bridge

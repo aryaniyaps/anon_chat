@@ -39,6 +39,10 @@ dependencies:
 
   socket_io_client: ^2.0.2
 
+  dio: ^5.1.1
+
+  json_annotation: ^4.8.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -49,6 +53,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  json_serializable: ^6.6.1
+
+  build_runner: ^2.3.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

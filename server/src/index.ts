@@ -1,5 +1,3 @@
-import 'dotenv-safe/config';
-
 import { createServer, Server } from 'node:http';
 
 import Koa from 'koa';

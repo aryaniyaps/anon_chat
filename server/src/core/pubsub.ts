@@ -1,7 +1,7 @@
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 import { Server } from 'socket.io';
 
-const publisher = createClient();
+const publisher = new Redis(process.env.REDIS_URL!);
 
 const subscriber = publisher.duplicate();
 
@@ -9,8 +9,10 @@ const subscriber = publisher.duplicate();
 
 function registerEvents(server: Server): void {
   subscriber.on('message', function (channel, message) {
+    console.log(channel, message);
     server.emit(channel, message);
   });
+  publisher.publish('test', 'test message');
 }
 
 export { publisher, registerEvents };

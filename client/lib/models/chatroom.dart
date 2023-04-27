@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'chatroom.g.dart';
+
+@JsonSerializable()
 class ChatRoom {
   String id;
   String name;
@@ -9,11 +14,9 @@ class ChatRoom {
     required this.createdAt,
   });
 
-  static ChatRoom fromJSON(data) {
-    return ChatRoom(
-      id: data.id,
-      name: data.name,
-      createdAt: data.createdAt,
-    );
+  factory ChatRoom.fromJson(Map<String, dynamic> json) {
+    return _$ChatRoomFromJson(json);
   }
+
+  Map<String, dynamic> toJson() => _$ChatRoomToJson(this);
 }

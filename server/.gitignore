@@ -3,6 +3,3 @@
 
 # typescript
 /dist
-
-# environment
-.env
