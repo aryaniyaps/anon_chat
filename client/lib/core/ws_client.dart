@@ -11,16 +11,11 @@ class WSClient {
     },
   );
 
-  void connect() {
+  WSClient() {
     _socket.connect();
     _socket.onConnect(
-      (data) {
+      (_) {
         print("connected to websocket server.");
-      },
-    );
-    _socket.onError(
-      (error) {
-        print(error.toString());
       },
     );
   }
@@ -29,3 +24,5 @@ class WSClient {
     _socket.disconnect();
   }
 }
+
+final wsClient = WSClient();

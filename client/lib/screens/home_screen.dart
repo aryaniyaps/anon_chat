@@ -108,26 +108,26 @@ class CreateRoomForm extends StatefulWidget {
 class _CreateRoomFormState extends State<CreateRoomForm> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  Future<void> createRoom() async {}
-
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _formKey,
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FormBuilderTextField(
-            name: "name",
-            maxLength: 25,
-            validator: FormBuilderValidators.required(),
-            decoration: const InputDecoration(
-              labelText: "room name",
-              hintText: "What should we call your room?",
+          Expanded(
+            child: FormBuilderTextField(
+              name: "name",
+              maxLength: 25,
+              validator: FormBuilderValidators.required(),
+              decoration: const InputDecoration(
+                labelText: "room name",
+                hintText: "What should we call your room?",
+              ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(width: 20),
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.saveAndValidate()) {
