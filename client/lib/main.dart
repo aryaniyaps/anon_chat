@@ -1,10 +1,18 @@
+import 'package:anon_chat/core/ws_client.dart';
 import 'package:anon_chat/screens/chat_room_screen.dart';
 import 'package:anon_chat/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  runApp(const MyApp());
+  // init ws connection
+  wsClient.connect();
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

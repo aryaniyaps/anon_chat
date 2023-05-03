@@ -1,7 +1,8 @@
 import 'package:anon_chat/core/http_client.dart';
-import 'package:anon_chat/models/chatroom.dart';
+import 'package:anon_chat/providers/chatroom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -30,60 +31,51 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class ChatRoomList extends StatefulWidget {
+class ChatRoomList extends ConsumerWidget {
   const ChatRoomList({super.key});
 
   @override
-  State<ChatRoomList> createState() => _ChatRoomListState();
-}
-
-class _ChatRoomListState extends State<ChatRoomList> {
-  List<ChatRoom> _chatRooms = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadChatRooms();
-  }
-
-  Future<void> loadChatRooms() async {
-    var result = await httpClient.getChatRooms();
-    setState(() {
-      _chatRooms = result;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_chatRooms.isEmpty) {
-      return const Center(
-        child: Text("no rooms created."),
-      );
-    }
-    return ListView.separated(
-      itemCount: _chatRooms.length,
-      itemBuilder: (context, index) {
-        var chatRoom = _chatRooms[index];
-        return InkWell(
-          onTap: () {
-            // join chatroom with ID
-            context.push("/chatrooms/${chatRoom.id}");
-          },
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(8.0),
-            title: Text(chatRoom.name),
-            subtitle: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "created ${timeago.format(chatRoom.createdAt)}",
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chatRooms = ref.watch(chatRoomProvider);
+    return chatRooms.when(
+      data: (chatRooms) {
+        if (chatRooms.isEmpty) {
+          return const Center(
+            child: Text("no rooms created."),
+          );
+        }
+        return ListView.separated(
+          itemCount: chatRooms.length,
+          itemBuilder: (context, index) {
+            var chatRoom = chatRooms[index];
+            return InkWell(
+              onTap: () {
+                // join chatroom with ID
+                context.push("/chatrooms/${chatRoom.id}");
+              },
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(8.0),
+                title: Text(chatRoom.name),
+                subtitle: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    "created ${timeago.format(chatRoom.createdAt)}",
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider();
+          },
         );
       },
-      separatorBuilder: (context, index) {
-        return const Divider();
-      },
+      error: (error, stackTrace) => Center(
+        child: Text(error.toString()),
+      ),
+      loading: () => const Center(
+        child: Text("loading"),
+      ),
     );
   }
 }

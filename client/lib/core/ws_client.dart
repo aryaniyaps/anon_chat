@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:socket_io_client/socket_io_client.dart';
 
 class WSClient {
-  final _socket = io(
+  final socket = io(
     const String.fromEnvironment("API_URL"),
     <String, dynamic>{
       "autoConnect": false,
@@ -11,17 +13,17 @@ class WSClient {
     },
   );
 
-  WSClient() {
-    _socket.connect();
-    _socket.onConnect(
+  void connect() {
+    socket.connect();
+    socket.onConnect(
       (_) {
-        print("connected to websocket server.");
+        log("connected to websocket server.");
       },
     );
   }
 
   void disconnect() {
-    _socket.disconnect();
+    socket.disconnect();
   }
 }
 
