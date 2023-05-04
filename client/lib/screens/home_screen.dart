@@ -1,5 +1,5 @@
 import 'package:anon_chat/core/http_client.dart';
-import 'package:anon_chat/providers/chatroom.dart';
+import 'package:anon_chat/providers/chatrooms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +36,7 @@ class ChatRoomList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatRooms = ref.watch(chatRoomProvider);
+    final chatRooms = ref.watch(chatRoomsProvider);
     return chatRooms.when(
       data: (chatRooms) {
         if (chatRooms.isEmpty) {

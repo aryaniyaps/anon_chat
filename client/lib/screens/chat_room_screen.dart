@@ -1,111 +1,101 @@
 import 'package:anon_chat/core/http_client.dart';
 import 'package:anon_chat/models/message.dart';
+import 'package:anon_chat/providers/chatroom.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../models/chatroom.dart';
-
-class ChatRoomScreen extends StatefulWidget {
+class ChatRoomScreen extends ConsumerWidget {
   final String chatRoomId;
 
-  const ChatRoomScreen({super.key, required this.chatRoomId});
-
-  @override
-  State<ChatRoomScreen> createState() => _ChatRoomScreenState();
-}
-
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  ChatRoom? _chatRoom;
+  ChatRoomScreen({super.key, required this.chatRoomId});
 
   final _messageController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    loadChatRoom();
-  }
 
   @override
   void dispose() {
     // clean up controller
     _messageController.dispose();
-    super.dispose();
-  }
-
-  Future<void> loadChatRoom() async {
-    var result = await httpClient.getChatRoom(roomId: widget.chatRoomId);
-    setState(() {
-      _chatRoom = result;
-    });
+    // super.dispose();
   }
 
   void sendMessage() async {
     await httpClient.createMessage(
-      roomId: _chatRoom!.id,
+      roomId: chatRoomId,
       content: _messageController.value.toString(),
     );
     _messageController.clear();
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (_chatRoom == null) {
-      return Scaffold(
-        body: Container(),
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_chatRoom!.name),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // leave chatroom with ID
-            context.pop();
-          },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final response = ref.watch(chatRoomProvider(chatRoomId));
+    return response.when(
+      data: (data) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(data.name),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                // leave chatroom with ID
+                context.pop();
+              },
+            ),
+          ),
+          body: Column(
+            children: <Widget>[
+              Expanded(
+                child: MessageList(
+                    // key: widget.key,
+                    ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                height: 60,
+                width: double.infinity,
+                color: Colors.white,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: _messageController,
+                        decoration: const InputDecoration(
+                          hintText: "Send a message...",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    FloatingActionButton(
+                      onPressed: sendMessage,
+                      // remove shadow
+                      elevation: 0,
+                      child: const Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      error: (error, traceBack) => Scaffold(
+        body: Container(
+          child: Text(
+            error.toString(),
+          ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: MessageList(
-              key: widget.key,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-            height: 60,
-            width: double.infinity,
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: "Send a message...",
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                FloatingActionButton(
-                  onPressed: sendMessage,
-                  // remove shadow
-                  elevation: 0,
-                  child: const Icon(
-                    Icons.send,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      loading: () => Scaffold(
+        body: Container(),
       ),
     );
   }
