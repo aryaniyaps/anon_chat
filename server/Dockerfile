@@ -4,6 +4,7 @@ ARG APP_HOME=/server/
 WORKDIR ${APP_HOME}
 
 COPY package.json package-lock.json ./
+COPY prisma ./prisma/
 
 FROM build as development
 
@@ -22,7 +23,7 @@ FROM build as production
 # directly install from package-lock.json
 RUN npm ci --omit=dev
 
-COPY . .
+COPY  . .
 
 EXPOSE 3000
 

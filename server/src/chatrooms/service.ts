@@ -1,29 +1,27 @@
+import type { ChatRoom, Message } from '@prisma/client';
 import { publisher } from '../core/pubsub';
 import repo from './repo';
-import { ChatRoom, Message } from './types';
 
-function addChatRoom(input: { name: string }): ChatRoom {
-  const chatRoom = repo.addChatRoom({ name: input.name });
+async function addChatRoom(input: { name: string }): Promise<ChatRoom> {
+  const chatRoom = await repo.addChatRoom({ name: input.name });
   publisher.publish('chatrooms:create', JSON.stringify(chatRoom));
   return chatRoom;
 }
 
-function getChatRooms(): ChatRoom[] {
-  return repo.getChatRooms();
+async function getChatRooms(): Promise<ChatRoom[]> {
+  return await repo.getChatRooms();
 }
 
-function getChatRoom(input: { roomId: string }): ChatRoom {
-  return repo.getChatRoom({ roomId: input.roomId });
+async function getChatRoom(input: { roomId: string }): Promise<ChatRoom> {
+  return await repo.getChatRoom({ roomId: input.roomId });
 }
 
-function addMessage(input: {
+async function addMessage(input: {
   content: string;
-  ownerId: string;
   roomId: string;
-}): Message {
-  const message = repo.addMessage({
+}): Promise<Message> {
+  const message = await repo.addMessage({
     content: input.content,
-    ownerId: input.ownerId,
     roomId: input.roomId
   });
   // pub message

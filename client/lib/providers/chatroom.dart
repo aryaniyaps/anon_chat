@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:anon_chat/core/http_client.dart';
 import 'package:anon_chat/models/chatroom.dart';
 import 'package:anon_chat/providers/ws_channel.dart';
@@ -9,6 +11,10 @@ final chatRoomProvider = StreamProvider<List<ChatRoom>>((ref) async* {
 
   channel.stream.listen((message) {
     print(message);
+
+    var content = jsonDecode(message);
+    print(content);
+    print(content["data"]);
     // message.data doesn't exist!
     // print(message.data);
   });

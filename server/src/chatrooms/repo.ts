@@ -1,44 +1,31 @@
-import { v4 } from 'uuid';
+import type { ChatRoom, Message } from '@prisma/client';
 
+import { prisma } from '../core/database';
 import { ResourceNotFound } from '../core/errors';
-import { ChatRoom, Message } from './types';
 
-const chatRooms = new Map<string, ChatRoom>();
-
-function addChatRoom(data: { name: string }): ChatRoom {
-  const chatRoom: ChatRoom = {
-    id: v4(),
-    name: data.name,
-    createdAt: new Date(),
-    messages: []
-  };
-  chatRooms.set(chatRoom.id, chatRoom);
-  return chatRoom;
+async function addChatRoom(data: { name: string }): Promise<ChatRoom> {
+  return await prisma.chatRoom.create({ data });
 }
 
-function addMessage(data: {
+async function addMessage(data: {
   content: string;
   roomId: string;
-  ownerId: string;
-}): Message {
-  const chatRoom = getChatRoom({ roomId: data.roomId });
-  const message: Message = {
-    id: v4(),
-    roomId: data.roomId,
-    ownerId: data.roomId,
-    content: data.content,
-    createdAt: new Date()
-  };
-  chatRoom.messages.push(message);
-  return message;
+}): Promise<Message> {
+  // check if chatroom is valid
+  await getChatRoom({ roomId: data.roomId });
+  return await prisma.message.create({
+    data: { content: data.content, chatRoomId: data.roomId }
+  });
 }
 
-function getChatRooms(): ChatRoom[] {
-  return Array.from(chatRooms, ([_, chatRoom]) => chatRoom);
+async function getChatRooms(): Promise<ChatRoom[]> {
+  return await prisma.chatRoom.findMany();
 }
 
-function getChatRoom(data: { roomId: string }): ChatRoom {
-  const chatRoom = chatRooms.get(data.roomId);
+async function getChatRoom(data: { roomId: string }): Promise<ChatRoom> {
+  const chatRoom = await prisma.chatRoom.findFirst({
+    where: { id: data.roomId }
+  });
   if (!chatRoom) {
     throw new ResourceNotFound({
       message: `ChatRoom with ID ${data.roomId} not found.`

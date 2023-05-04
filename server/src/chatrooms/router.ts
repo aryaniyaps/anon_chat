@@ -5,30 +5,29 @@ import service from './service';
 
 const router = new Router({ prefix: '/chatrooms' });
 
-router.get('/', (ctx) => {
-  const chatRooms = service.getChatRooms();
+router.get('/', async (ctx) => {
+  const chatRooms = await service.getChatRooms();
   ctx.body = chatRooms;
 });
 
 router.post('/', async (ctx) => {
   const data = await addChatRoomSchema.validate(ctx.request.body);
-  const chatRoom = service.addChatRoom({ name: data.name });
+  const chatRoom = await service.addChatRoom({ name: data.name });
   ctx.body = chatRoom;
 });
 
-router.get('/:id', (ctx) => {
+router.get('/:id', async (ctx) => {
   const roomId = ctx.params.id;
-  const chatRoom = service.getChatRoom({ roomId });
+  const chatRoom = await service.getChatRoom({ roomId });
   ctx.body = chatRoom;
 });
 
 router.post('/:id/messages', async (ctx) => {
   const roomId = ctx.params.id;
   const data = await addMessageSchema.validate(ctx.request.body);
-  const message = service.addMessage({
+  const message = await service.addMessage({
     roomId,
-    content: data.content,
-    ownerId: ''
+    content: data.content
   });
   ctx.body = message;
 });
