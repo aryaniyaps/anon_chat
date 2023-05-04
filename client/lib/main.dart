@@ -1,4 +1,3 @@
-import 'package:anon_chat/core/ws_client.dart';
 import 'package:anon_chat/screens/chat_room_screen.dart';
 import 'package:anon_chat/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  // init ws connection
-  wsClient.connect();
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -28,7 +25,9 @@ class _MyAppState extends State<MyApp> {
     routes: [
       GoRoute(
         path: "/",
-        builder: (context, state) => HomeScreen(key: state.pageKey),
+        builder: (context, state) {
+          return HomeScreen(key: state.pageKey);
+        },
       ),
       GoRoute(
         path: "/chatrooms/:id",

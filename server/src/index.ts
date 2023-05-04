@@ -2,7 +2,7 @@ import { createServer, Server } from 'node:http';
 
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { Server as SocketIOServer } from 'socket.io';
+import WebSocket from 'ws';
 
 import router from './chatrooms/router';
 import errorHandler from './core/middleware/error-handler';
@@ -10,9 +10,9 @@ import { registerEvents } from './core/pubsub';
 
 function main(): void {
   const app = createApp();
-  const httpServer = createServer(app.callback());
-  createSocketIOServer(httpServer);
-  httpServer.listen(parseInt(process.env.PORT!), () => {
+  const server = createServer(app.callback());
+  createWSServer(server);
+  server.listen(parseInt(process.env.PORT!), () => {
     console.log(`🚀 listening at ${process.env.PORT!}`);
   });
 }
@@ -25,10 +25,9 @@ function createApp(): Koa {
   return app;
 }
 
-function createSocketIOServer(httpServer: Server): SocketIOServer {
-  const io = new SocketIOServer(httpServer);
-  registerEvents(io);
-  return io;
+function createWSServer(server: Server): void {
+  const ws = new WebSocket.Server({ server });
+  registerEvents(ws);
 }
 
 function registerRoutes(app: Koa): void {

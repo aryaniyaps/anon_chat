@@ -1,5 +1,6 @@
 import { v4 } from 'uuid';
 
+import { ResourceNotFound } from '../core/errors';
 import { ChatRoom, Message } from './types';
 
 const chatRooms = new Map<string, ChatRoom>();
@@ -37,7 +38,13 @@ function getChatRooms(): ChatRoom[] {
 }
 
 function getChatRoom(data: { roomId: string }): ChatRoom {
-  return chatRooms.get(data.roomId)!;
+  const chatRoom = chatRooms.get(data.roomId);
+  if (!chatRoom) {
+    throw new ResourceNotFound({
+      message: `ChatRoom with ID ${data.roomId} not found.`
+    });
+  }
+  return chatRoom;
 }
 
 // populate chatrooms

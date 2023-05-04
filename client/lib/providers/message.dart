@@ -1,16 +1,13 @@
-import 'dart:developer';
-
-import 'package:anon_chat/core/ws_client.dart';
 import 'package:anon_chat/models/message.dart';
+import 'package:anon_chat/providers/ws_channel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final messageProvider = StreamProvider<List<Message>>((ref) async* {
-  wsClient.socket.on("messages:create", (data) {
-    log("message created");
-    log(data);
-  });
+  final channel = ref.watch(wsChannelProvider);
+  // return a stream of messages here
 
-  ref.onDispose(() {
-    wsClient.disconnect();
-  });
+  // wsClient.socket.on("messages:create", (data) {
+  //   log("message created");
+  //   log(data);
+  // });
 });

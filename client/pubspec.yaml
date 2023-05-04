@@ -41,7 +41,7 @@ dependencies:
 
   flutter_riverpod: ^2.3.6
 
-  socket_io_client: ^2.0.2
+  web_socket_channel: ^2.4.0
 
   dio: ^5.1.1
 
