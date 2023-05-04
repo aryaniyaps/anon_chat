@@ -19,8 +19,6 @@ function registerEvents(ws: WebSocketServer): void {
   });
   subscriber.subscribe('chatrooms:create');
   subscriber.subscribe('messages:create');
-  subscriber.subscribe('test');
-  publisher.publish('test', JSON.stringify('test message'));
 }
 
 export { publisher, registerEvents };
