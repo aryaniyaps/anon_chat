@@ -1,30 +1,35 @@
 import 'dart:convert';
 
-import 'package:anon_chat/core/http_client.dart';
 import 'package:anon_chat/models/chatroom.dart';
+import 'package:anon_chat/providers/repository.dart';
 import 'package:anon_chat/providers/ws_channel.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatRoomsProvider = StreamProvider<List<ChatRoom>>((ref) async* {
-  var chatRooms = await httpClient.getChatRooms();
+  // cancel the HTTP request if user leaves inbetween
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final repo = ref.watch(repositoryProvider);
+
   final channel = ref.watch(wsChannelProvider);
+
+  var chatRooms = await repo.getChatRooms(cancelToken: cancelToken);
 
   channel.stream.listen((message) {
     print(message);
 
     var content = jsonDecode(message);
-    print(content);
-    print(content["data"]);
-    // message.data doesn't exist!
-    // print(message.data);
+
+    if (content["type"] == "chatrooms:create") {
+      chatRooms.add(
+        ChatRoom.fromJson(
+          content["data"],
+        ),
+      );
+    }
   });
-
-  // wsClient.socket.on("chatrooms:create", (data) {
-  //   print("chatroom created");
-  //   log(data);
-
-  //   chatRooms.add(ChatRoom.fromJson(data));
-  // });
 
   yield chatRooms;
 });

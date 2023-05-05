@@ -1,5 +1,5 @@
-import 'package:anon_chat/core/http_client.dart';
 import 'package:anon_chat/providers/chatrooms.dart';
+import 'package:anon_chat/providers/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,12 +70,10 @@ class ChatRoomList extends ConsumerWidget {
           },
         );
       },
-      error: (error, stackTrace) => Center(
+      error: (error, stack) => Center(
         child: Text(error.toString()),
       ),
-      loading: () => const Center(
-        child: Text("loading"),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -90,18 +88,19 @@ Widget buildCreateRoomModal(BuildContext context) {
   );
 }
 
-class CreateRoomForm extends StatefulWidget {
+class CreateRoomForm extends ConsumerStatefulWidget {
   const CreateRoomForm({super.key});
 
   @override
-  State<CreateRoomForm> createState() => _CreateRoomFormState();
+  ConsumerState<CreateRoomForm> createState() => _CreateRoomFormState();
 }
 
-class _CreateRoomFormState extends State<CreateRoomForm> {
+class _CreateRoomFormState extends ConsumerState<CreateRoomForm> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
+    final repo = ref.watch(repositoryProvider);
     return FormBuilder(
       key: _formKey,
       child: Row(
@@ -124,7 +123,7 @@ class _CreateRoomFormState extends State<CreateRoomForm> {
             onPressed: () async {
               if (_formKey.currentState!.saveAndValidate()) {
                 var result = _formKey.currentState!.value;
-                var chatRoom = await httpClient.createChatRoom(
+                var chatRoom = await repo.createChatRoom(
                   name: result["name"],
                 );
                 // reset text field.

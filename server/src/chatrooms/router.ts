@@ -32,4 +32,10 @@ router.post('/:id/messages', async (ctx) => {
   ctx.body = message;
 });
 
+router.get('/:id/messages', async (ctx) => {
+  const roomId = ctx.params.id;
+  const messages = await service.getMessages({ roomId });
+  ctx.body = messages;
+});
+
 export default router;

@@ -7,15 +7,13 @@ class Message {
   String id;
   String content;
   DateTime createdAt;
-  String roomId;
-  String ownerId;
+  String chatRoomId;
 
   Message({
     required this.id,
     required this.content,
     required this.createdAt,
-    required this.roomId,
-    required this.ownerId,
+    required this.chatRoomId,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {

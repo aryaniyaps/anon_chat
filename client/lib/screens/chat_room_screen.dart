@@ -1,41 +1,47 @@
-import 'package:anon_chat/core/http_client.dart';
-import 'package:anon_chat/models/message.dart';
 import 'package:anon_chat/providers/chatroom.dart';
+import 'package:anon_chat/providers/messages.dart';
+import 'package:anon_chat/providers/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class ChatRoomScreen extends ConsumerWidget {
+class ChatRoomScreen extends ConsumerStatefulWidget {
   final String chatRoomId;
 
-  ChatRoomScreen({super.key, required this.chatRoomId});
+  const ChatRoomScreen({super.key, required this.chatRoomId});
 
+  @override
+  ConsumerState<ChatRoomScreen> createState() => _ChatRoomScreenState();
+}
+
+class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   final _messageController = TextEditingController();
 
   @override
   void dispose() {
     // clean up controller
     _messageController.dispose();
-    // super.dispose();
+    super.dispose();
   }
 
   void sendMessage() async {
-    await httpClient.createMessage(
-      roomId: chatRoomId,
-      content: _messageController.value.toString(),
+    final repo = ref.watch(repositoryProvider);
+    await repo.createMessage(
+      roomId: widget.chatRoomId,
+      content: _messageController.value.text,
     );
     _messageController.clear();
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final response = ref.watch(chatRoomProvider(chatRoomId));
+  Widget build(BuildContext context) {
+    final response = ref.watch(chatRoomProvider(widget.chatRoomId));
     return response.when(
-      data: (data) {
+      data: (chatRoom) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(data.name),
+            title: Text(chatRoom.name),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
@@ -48,8 +54,9 @@ class ChatRoomScreen extends ConsumerWidget {
             children: <Widget>[
               Expanded(
                 child: MessageList(
-                    // key: widget.key,
-                    ),
+                  key: widget.key,
+                  chatRoomId: widget.chatRoomId,
+                ),
               ),
               Container(
                 padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
@@ -87,30 +94,30 @@ class ChatRoomScreen extends ConsumerWidget {
           ),
         );
       },
-      error: (error, traceBack) => Scaffold(
-        body: Container(
+      error: (error, stack) => Scaffold(
+        body: Center(
           child: Text(
             error.toString(),
           ),
         ),
       ),
-      loading: () => Scaffold(
-        body: Container(),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
 }
 
-class MessageList extends StatefulWidget {
-  const MessageList({super.key});
+class MessageList extends ConsumerStatefulWidget {
+  final String chatRoomId;
+
+  const MessageList({super.key, required this.chatRoomId});
 
   @override
-  State<MessageList> createState() => _MessageListState();
+  ConsumerState<MessageList> createState() => _MessageListState();
 }
 
-class _MessageListState extends State<MessageList> {
-  final _messages = <Message>[];
-
+class _MessageListState extends ConsumerState<MessageList> {
   late ScrollController _scrollController;
 
   @override
@@ -138,32 +145,38 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      controller: _scrollController,
-      itemCount: _messages.length,
-      physics: const ClampingScrollPhysics(),
-      itemBuilder: (context, index) {
-        var message = _messages[index];
-        return ListTile(
-          title: Text(message.content),
-          subtitle: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: SizedBox(
-              height: 20,
-              child: Row(
-                children: [
-                  Text(message.ownerId),
-                  const VerticalDivider(),
-                  Text(timeago.format(message.createdAt)),
-                ],
+    final response = ref.watch(messagesProvider(widget.chatRoomId));
+
+    return response.when(
+      data: (messages) {
+        return ListView.separated(
+          controller: _scrollController,
+          itemCount: messages.length,
+          physics: const ClampingScrollPhysics(),
+          itemBuilder: (context, index) {
+            var message = messages[index];
+            return ListTile(
+              title: Text(message.content),
+              subtitle: Text(
+                timeago.format(message.createdAt),
               ),
-            ),
-          ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider();
+          },
         );
       },
-      separatorBuilder: (context, index) {
-        return const Divider();
-      },
+      error: (error, stack) => Scaffold(
+        body: Center(
+          child: Text(
+            error.toString(),
+          ),
+        ),
+      ),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

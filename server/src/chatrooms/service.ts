@@ -28,9 +28,15 @@ async function addMessage(input: {
   publisher.publish('messages:create', JSON.stringify(message));
   return message;
 }
+
+async function getMessages(input: { roomId: string }) {
+  return await repo.getMessages({ roomId: input.roomId });
+}
+
 export default {
   addChatRoom,
   getChatRoom,
   getChatRooms,
-  addMessage
+  addMessage,
+  getMessages
 };
