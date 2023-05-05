@@ -1,17 +1,25 @@
 import Router from '@koa/router';
 
-import { addChatRoomSchema, addMessageSchema } from './schema';
+import {
+  addChatRoomSchema,
+  addMessageSchema,
+  getChatRoomsSchema
+} from './schema';
 import service from './service';
 
 const router = new Router({ prefix: '/chatrooms' });
 
 router.get('/', async (ctx) => {
-  const chatRooms = await service.getChatRooms();
+  const data = await getChatRoomsSchema.validate(ctx.query);
+  const chatRooms = await service.getChatRooms({
+    take: data.take,
+    cursor: data.cursor
+  });
   ctx.body = chatRooms;
 });
 
 router.post('/', async (ctx) => {
-  const data = await addChatRoomSchema.validate(ctx.request.body);
+  const data = await addChatRoomSchema.validate(ctx.body);
   const chatRoom = await service.addChatRoom({ name: data.name });
   ctx.body = chatRoom;
 });
@@ -24,7 +32,7 @@ router.get('/:id', async (ctx) => {
 
 router.post('/:id/messages', async (ctx) => {
   const roomId = ctx.params.id;
-  const data = await addMessageSchema.validate(ctx.request.body);
+  const data = await addMessageSchema.validate(ctx.body);
   const message = await service.addMessage({
     roomId,
     content: data.content,
@@ -35,7 +43,12 @@ router.post('/:id/messages', async (ctx) => {
 
 router.get('/:id/messages', async (ctx) => {
   const roomId = ctx.params.id;
-  const messages = await service.getMessages({ roomId });
+  const data = await getChatRoomsSchema.validate(ctx.query);
+  const messages = await service.getMessages({
+    roomId,
+    take: data.take,
+    cursor: data.cursor
+  });
   ctx.body = messages;
 });
 

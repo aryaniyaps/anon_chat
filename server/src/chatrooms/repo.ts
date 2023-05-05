@@ -22,16 +22,35 @@ async function addMessage(data: {
   });
 }
 
-async function getMessages(data: { roomId: string }) {
+async function getMessages(data: {
+  roomId: string;
+  take: number;
+  cursor?: string;
+}) {
   // check if chatroom is valid
   return await prisma.message.findMany({
+    take: data.take,
+    skip: data.cursor ? 1 : undefined,
+    cursor: {
+      id: data.cursor
+    },
     where: { chatRoomId: data.roomId },
     orderBy: [{ createdAt: 'desc' }]
   });
 }
 
-async function getChatRooms(): Promise<ChatRoom[]> {
-  return await prisma.chatRoom.findMany({ orderBy: [{ createdAt: 'desc' }] });
+async function getChatRooms(data: {
+  take: number;
+  cursor?: string;
+}): Promise<ChatRoom[]> {
+  return await prisma.chatRoom.findMany({
+    take: data.take,
+    skip: data.cursor ? 1 : undefined,
+    cursor: {
+      id: data.cursor
+    },
+    orderBy: [{ createdAt: 'desc' }]
+  });
 }
 
 async function getChatRoom(data: { roomId: string }): Promise<ChatRoom> {

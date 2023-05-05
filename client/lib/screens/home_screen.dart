@@ -66,7 +66,7 @@ class ChatRoomList extends ConsumerWidget {
                 context.push("/chatrooms/${chatRoom.id}");
               },
               child: ListTile(
-                contentPadding: const EdgeInsets.all(8.0),
+                contentPadding: const EdgeInsets.only(left: 16.0),
                 title: Text(chatRoom.name),
                 subtitle: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
