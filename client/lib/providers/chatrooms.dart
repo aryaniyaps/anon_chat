@@ -23,7 +23,7 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<List<ChatRoom>>> {
   }
 
   void addChatRoom(ChatRoom chatRoom) {
-    state = AsyncValue.data([...state.requireValue, chatRoom]);
+    state = AsyncValue.data([chatRoom, ...state.requireValue]);
   }
 }
 

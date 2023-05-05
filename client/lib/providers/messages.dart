@@ -31,7 +31,7 @@ class MessagesNotifier extends StateNotifier<AsyncValue<List<Message>>> {
   }
 
   void addMessage(Message message) {
-    state = AsyncValue.data([...state.requireValue, message]);
+    state = AsyncValue.data([message, ...state.requireValue]);
   }
 }
 

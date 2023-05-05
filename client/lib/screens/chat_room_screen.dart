@@ -130,8 +130,7 @@ class _MessageListState extends ConsumerState<MessageList> {
           itemCount: messages.length,
           physics: const ClampingScrollPhysics(),
           itemBuilder: (context, index) {
-            final reversedIndex = messages.length - 1 - index;
-            var message = messages[reversedIndex];
+            var message = messages[index];
             return ListTile(
               title: Text(message.content),
               subtitle: Text(
