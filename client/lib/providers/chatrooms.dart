@@ -3,8 +3,8 @@ import 'package:anon_chat/providers/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatRoomsNotifier extends StateNotifier<List<ChatRoom>> {
-  ChatRoomsNotifier({required this.ref}) : super([]) {
+class ChatRoomsNotifier extends StateNotifier<AsyncValue<List<ChatRoom>>> {
+  ChatRoomsNotifier({required this.ref}) : super(const AsyncLoading()) {
     loadChatRooms();
   }
 
@@ -17,15 +17,17 @@ class ChatRoomsNotifier extends StateNotifier<List<ChatRoom>> {
     ref.onDispose(cancelToken.cancel);
 
     final repo = ref.read(repositoryProvider);
-    state = await repo.getChatRooms(cancelToken: cancelToken);
+    state = AsyncValue.data(
+      await repo.getChatRooms(cancelToken: cancelToken),
+    );
   }
 
   void addChatRoom(ChatRoom chatRoom) {
-    state = [...state, chatRoom];
+    state = AsyncValue.data([...state.requireValue, chatRoom]);
   }
 }
 
-final chatRoomsProvider =
-    StateNotifierProvider.autoDispose<ChatRoomsNotifier, List<ChatRoom>>((ref) {
+final chatRoomsProvider = StateNotifierProvider.autoDispose<ChatRoomsNotifier,
+    AsyncValue<List<ChatRoom>>>((ref) {
   return ChatRoomsNotifier(ref: ref);
 });

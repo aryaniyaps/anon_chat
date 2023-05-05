@@ -3,11 +3,11 @@ import 'package:anon_chat/providers/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MessagesNotifier extends StateNotifier<List<Message>> {
+class MessagesNotifier extends StateNotifier<AsyncValue<List<Message>>> {
   MessagesNotifier({
     required this.ref,
     required this.chatRoomId,
-  }) : super([]) {
+  }) : super(const AsyncLoading()) {
     loadMessages();
   }
 
@@ -22,19 +22,20 @@ class MessagesNotifier extends StateNotifier<List<Message>> {
     ref.onDispose(cancelToken.cancel);
 
     final repo = ref.read(repositoryProvider);
-    state = await repo.getMessages(
-      cancelToken: cancelToken,
-      roomId: chatRoomId,
+    state = AsyncValue.data(
+      await repo.getMessages(
+        cancelToken: cancelToken,
+        roomId: chatRoomId,
+      ),
     );
   }
 
   void addMessage(Message message) {
-    state = [...state, message];
+    state = AsyncValue.data([...state.requireValue, message]);
   }
 }
 
-final messagesProvider =
-    StateNotifierProvider.family<MessagesNotifier, List<Message>, String>(
-        (ref, id) {
+final messagesProvider = StateNotifierProvider.family<MessagesNotifier,
+    AsyncValue<List<Message>>, String>((ref, id) {
   return MessagesNotifier(ref: ref, chatRoomId: id);
 });

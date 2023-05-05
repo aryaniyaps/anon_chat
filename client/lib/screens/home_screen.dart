@@ -36,36 +36,48 @@ class ChatRoomList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatRooms = ref.watch(chatRoomsProvider);
-    if (chatRooms.isEmpty) {
-      return const Center(
-        child: Text("no rooms created."),
-      );
-    }
-    return ListView.separated(
-      itemCount: chatRooms.length,
-      itemBuilder: (context, index) {
-        var chatRoom = chatRooms[index];
-        return InkWell(
-          onTap: () {
-            // join chatroom with ID
-            context.push("/chatrooms/${chatRoom.id}");
-          },
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(8.0),
-            title: Text(chatRoom.name),
-            subtitle: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                "created ${timeago.format(chatRoom.createdAt)}",
+    final response = ref.watch(chatRoomsProvider);
+    return response.when(
+      data: (chatRooms) {
+        if (chatRooms.isEmpty) {
+          return const Center(
+            child: Text("no rooms created."),
+          );
+        }
+        return ListView.separated(
+          itemCount: chatRooms.length,
+          itemBuilder: (context, index) {
+            var chatRoom = chatRooms[index];
+            return InkWell(
+              onTap: () {
+                // join chatroom with ID
+                context.push("/chatrooms/${chatRoom.id}");
+              },
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(8.0),
+                title: Text(chatRoom.name),
+                subtitle: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    "created ${timeago.format(chatRoom.createdAt)}",
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider();
+          },
         );
       },
-      separatorBuilder: (context, index) {
-        return const Divider();
-      },
+      error: (error, stack) => Center(
+        child: Text(
+          error.toString(),
+        ),
+      ),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

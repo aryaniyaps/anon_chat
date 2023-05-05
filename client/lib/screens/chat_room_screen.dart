@@ -56,7 +56,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         child: FormBuilderTextField(
                           name: "content",
                           maxLength: 250,
-                          autofocus: true,
                           decoration: const InputDecoration(
                             hintText: "send a message",
                             border: InputBorder.none,
@@ -123,24 +122,38 @@ class MessageList extends ConsumerStatefulWidget {
 class _MessageListState extends ConsumerState<MessageList> {
   @override
   Widget build(BuildContext context) {
-    final messages = ref.watch(messagesProvider(widget.chatRoomId));
-    return ListView.separated(
-      reverse: true,
-      itemCount: messages.length,
-      physics: const ClampingScrollPhysics(),
-      itemBuilder: (context, index) {
-        final reversedIndex = messages.length - 1 - index;
-        var message = messages[reversedIndex];
-        return ListTile(
-          title: Text(message.content),
-          subtitle: Text(
-            timeago.format(message.createdAt),
-          ),
+    final response = ref.watch(messagesProvider(widget.chatRoomId));
+    return response.when(
+      data: (messages) {
+        return ListView.separated(
+          reverse: true,
+          itemCount: messages.length,
+          physics: const ClampingScrollPhysics(),
+          itemBuilder: (context, index) {
+            final reversedIndex = messages.length - 1 - index;
+            var message = messages[reversedIndex];
+            return ListTile(
+              title: Text(message.content),
+              subtitle: Text(
+                timeago.format(message.createdAt),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider();
+          },
         );
       },
-      separatorBuilder: (context, index) {
-        return const Divider();
-      },
+      error: (error, stack) => Scaffold(
+        body: Center(
+          child: Text(
+            error.toString(),
+          ),
+        ),
+      ),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }
