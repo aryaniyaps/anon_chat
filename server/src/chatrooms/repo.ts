@@ -34,13 +34,6 @@ async function getChatRoom(data: { roomId: string }): Promise<ChatRoom> {
   return chatRoom;
 }
 
-// populate chatrooms
-addChatRoom({ name: 'ChatRoom 1' });
-
-addChatRoom({ name: 'ChatRoom 2' });
-
-addChatRoom({ name: 'ChatRoom 3' });
-
 export default {
   addChatRoom,
   addMessage,
