@@ -1,3 +1,4 @@
+import 'package:anon_chat/providers/ws_channel.dart';
 import 'package:anon_chat/screens/chat_room_screen.dart';
 import 'package:anon_chat/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,20 +7,15 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(
-    const ProviderScope(
+    ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends ConsumerWidget {
+  MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   final _router = GoRouter(
     initialLocation: "/",
     routes: [
@@ -43,7 +39,9 @@ class _MyAppState extends State<MyApp> {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // initialize ws connection
+    ref.read(wsChannelProvider);
     return MaterialApp.router(
       title: 'Anonymous Chat',
       debugShowCheckedModeBanner: false,

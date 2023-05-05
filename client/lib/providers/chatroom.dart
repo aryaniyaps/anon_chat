@@ -9,7 +9,7 @@ final chatRoomProvider =
   final cancelToken = CancelToken();
   ref.onDispose(cancelToken.cancel);
 
-  final repo = ref.watch(repositoryProvider);
+  final repo = ref.read(repositoryProvider);
 
   final chatRoom = await repo.getChatRoom(
     roomId: roomId,

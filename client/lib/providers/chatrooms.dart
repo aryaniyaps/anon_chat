@@ -1,35 +1,31 @@
-import 'dart:convert';
-
 import 'package:anon_chat/models/chatroom.dart';
 import 'package:anon_chat/providers/repository.dart';
-import 'package:anon_chat/providers/ws_channel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final chatRoomsProvider = StreamProvider<List<ChatRoom>>((ref) async* {
-  // cancel the HTTP request if user leaves inbetween
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
+class ChatRoomsNotifier extends StateNotifier<List<ChatRoom>> {
+  ChatRoomsNotifier({required this.ref}) : super([]) {
+    loadChatRooms();
+  }
 
-  final repo = ref.watch(repositoryProvider);
+  final Ref ref;
 
-  final channel = ref.watch(wsChannelProvider);
+  Future<void> loadChatRooms() async {
+    // cancel the HTTP request if user leaves inbetween
+    final cancelToken = CancelToken();
 
-  var chatRooms = await repo.getChatRooms(cancelToken: cancelToken);
+    ref.onDispose(cancelToken.cancel);
 
-  channel.stream.listen((message) {
-    print(message);
+    final repo = ref.read(repositoryProvider);
+    state = await repo.getChatRooms(cancelToken: cancelToken);
+  }
 
-    var content = jsonDecode(message);
+  void addChatRoom(ChatRoom chatRoom) {
+    state = [...state, chatRoom];
+  }
+}
 
-    if (content["type"] == "chatrooms:create") {
-      chatRooms.add(
-        ChatRoom.fromJson(
-          content["data"],
-        ),
-      );
-    }
-  });
-
-  yield chatRooms;
+final chatRoomsProvider =
+    StateNotifierProvider.autoDispose<ChatRoomsNotifier, List<ChatRoom>>((ref) {
+  return ChatRoomsNotifier(ref: ref);
 });
