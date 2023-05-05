@@ -15,6 +15,18 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Anonymous chat"),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.account_circle,
+              size: 35,
+            ),
+            onPressed: () {},
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
       ),
       body: const ChatRoomList(),
       floatingActionButton: FloatingActionButton(
