@@ -51,6 +51,8 @@ dependencies:
 
   cookie_jar: ^4.0.2
 
+  path_provider: ^2.0.14
+
   json_annotation: ^4.8.0
 
 dev_dependencies:

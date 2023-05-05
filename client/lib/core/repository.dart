@@ -3,6 +3,7 @@ import 'package:anon_chat/models/message.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Repository {
   late final Dio _dio;
@@ -16,7 +17,19 @@ class Repository {
       ),
     );
 
-    _dio.interceptors.add(CookieManager(CookieJar()));
+    // add cookie manager
+    getApplicationDocumentsDirectory().then((docsDir) {
+      _dio.interceptors.add(
+        CookieManager(
+          PersistCookieJar(
+            ignoreExpires: true,
+            storage: FileStorage(
+              "${docsDir.path}/.cookies/",
+            ),
+          ),
+        ),
+      );
+    });
   }
 
   Future<ChatRoom> getChatRoom({
