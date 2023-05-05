@@ -1,15 +1,23 @@
 import 'package:anon_chat/models/chatroom.dart';
 import 'package:anon_chat/models/message.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 class Repository {
-  final _dio = Dio(
-    BaseOptions(
-      baseUrl: const String.fromEnvironment(
-        "API_URL",
+  late final Dio _dio;
+
+  Repository() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: const String.fromEnvironment(
+          "API_URL",
+        ),
       ),
-    ),
-  );
+    );
+
+    _dio.interceptors.add(CookieManager(CookieJar()));
+  }
 
   Future<ChatRoom> getChatRoom({
     required String roomId,

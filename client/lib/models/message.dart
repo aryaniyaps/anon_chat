@@ -7,12 +7,14 @@ class Message {
   String id;
   String content;
   DateTime createdAt;
+  String userId;
   String chatRoomId;
 
   Message({
     required this.id,
     required this.content,
     required this.createdAt,
+    required this.userId,
     required this.chatRoomId,
   });
 

@@ -8,6 +8,7 @@ services:
     restart: always
     environment:
       - PORT=3000
+      - SECRET_KEY=secret
       - DATABASE_URL=postgresql://anon_chat:anon_chat@postgres:5432/anon_chat
       - REDIS_URL=redis://:anon_chat@redis:6379/0
     ports:

@@ -9,18 +9,21 @@ async function addChatRoom(data: { name: string }): Promise<ChatRoom> {
 
 async function addMessage(data: {
   content: string;
+  userId: string;
   roomId: string;
 }): Promise<Message> {
   // check if chatroom is valid
-  await getChatRoom({ roomId: data.roomId });
   return await prisma.message.create({
-    data: { content: data.content, chatRoomId: data.roomId }
+    data: {
+      content: data.content,
+      chatRoomId: data.roomId,
+      userId: data.userId
+    }
   });
 }
 
 async function getMessages(data: { roomId: string }) {
   // check if chatroom is valid
-  await getChatRoom({ roomId: data.roomId });
   return await prisma.message.findMany({
     where: { chatRoomId: data.roomId },
     orderBy: [{ createdAt: 'desc' }]

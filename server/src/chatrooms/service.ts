@@ -18,11 +18,13 @@ async function getChatRoom(input: { roomId: string }): Promise<ChatRoom> {
 
 async function addMessage(input: {
   content: string;
+  userId: string;
   roomId: string;
 }): Promise<Message> {
   const message = await repo.addMessage({
     content: input.content,
-    roomId: input.roomId
+    roomId: input.roomId,
+    userId: input.userId
   });
   // pub message
   publisher.publish('messages:create', JSON.stringify(message));

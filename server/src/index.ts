@@ -1,15 +1,18 @@
 import { createServer, Server } from 'node:http';
 
 import Koa from 'koa';
-import bodyParser from 'koa-bodyparser';
 import WebSocket from 'ws';
 
 import router from './chatrooms/router';
+import bodyParser from './core/middleware/body-parser';
 import errorHandler from './core/middleware/error-handler';
+import session from './core/middleware/session';
+import setUserId from './core/middleware/set-user-id';
 import { registerEvents } from './core/pubsub';
 
 function main(): void {
   const app = createApp();
+  app.keys = ['secret-key-1', 'secret-key-2'];
   const server = createServer(app.callback());
   createWSServer(server);
   server.listen(parseInt(process.env.PORT!), () => {
@@ -19,8 +22,7 @@ function main(): void {
 
 function createApp(): Koa {
   const app = new Koa();
-  app.use(bodyParser());
-  app.use(errorHandler);
+  registerMiddleware(app);
   registerRoutes(app);
   return app;
 }
@@ -28,6 +30,13 @@ function createApp(): Koa {
 function createWSServer(server: Server): void {
   const ws = new WebSocket.Server({ server });
   registerEvents(ws);
+}
+
+function registerMiddleware(app: Koa): void {
+  app.use(bodyParser);
+  app.use(session(app));
+  app.use(setUserId);
+  app.use(errorHandler);
 }
 
 function registerRoutes(app: Koa): void {

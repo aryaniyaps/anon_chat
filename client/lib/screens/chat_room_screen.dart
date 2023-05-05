@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
   final String chatRoomId;
@@ -64,30 +64,35 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      FloatingActionButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.saveAndValidate()) {
-                            var result = _formKey.currentState!.value;
-                            var content = result["content"];
-                            if (content != null) {
-                              // todo: disable button instead when content is empty
-                              await repo.createMessage(
-                                roomId: widget.chatRoomId,
-                                content: result["content"],
-                              );
+                      TextFieldTapRegion(
+                        child: FloatingActionButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.saveAndValidate()) {
+                              final result = _formKey.currentState!.value;
+                              final content = result["content"];
+                              if (content != null) {
+                                // todo: disable button instead when content is empty
+                                await repo.createMessage(
+                                  roomId: widget.chatRoomId,
+                                  content: result["content"],
+                                );
+                              }
+                              // reset text field
+                              final textField =
+                                  _formKey.currentState!.fields["content"]!;
+                              textField.reset();
+                              textField.requestFocus();
                             }
-                            // reset text field
-                            _formKey.currentState!.fields["content"]?.reset();
-                          }
-                        },
-                        // remove shadow
-                        elevation: 0,
-                        child: const Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 18,
+                          },
+                          // remove shadow
+                          elevation: 0,
+                          child: const Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -133,8 +138,22 @@ class _MessageListState extends ConsumerState<MessageList> {
             var message = messages[index];
             return ListTile(
               title: Text(message.content),
-              subtitle: Text(
-                timeago.format(message.createdAt),
+              subtitle: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    message.userId,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    DateFormat.jm().format(message.createdAt),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             );
           },

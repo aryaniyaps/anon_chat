@@ -14,6 +14,7 @@ async function errorHandler(ctx: Context, next: Next) {
         errors: error.errors
       };
     } else if (error instanceof ResourceNotFound) {
+      // 404 Not Found
       ctx.status = 404;
       ctx.body = {
         message: error.message

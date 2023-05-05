@@ -27,7 +27,8 @@ router.post('/:id/messages', async (ctx) => {
   const data = await addMessageSchema.validate(ctx.request.body);
   const message = await service.addMessage({
     roomId,
-    content: data.content
+    content: data.content,
+    userId: ctx.session!.userId
   });
   ctx.body = message;
 });
