@@ -8,6 +8,7 @@ async function errorHandler(ctx: Context, next: Next) {
   } catch (error) {
     if (error instanceof ValidationError) {
       // 422 Unprocessable Entity
+      console.log(error);
       ctx.status = 422;
       ctx.body = {
         message: 'Invalid payload.',

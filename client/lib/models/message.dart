@@ -1,3 +1,4 @@
+import 'package:anon_chat/models/paging.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'message.g.dart';
@@ -23,4 +24,16 @@ class Message {
   }
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
+}
+
+@JsonSerializable()
+class MessagesResponse {
+  List<Message> data;
+  PageInfo pageInfo;
+
+  MessagesResponse({required this.data, required this.pageInfo});
+
+  factory MessagesResponse.fromJson(Map<String, dynamic> json) {
+    return _$MessagesResponseFromJson(json);
+  }
 }

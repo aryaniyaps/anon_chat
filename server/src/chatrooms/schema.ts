@@ -1,13 +1,13 @@
 import { number, object, string } from 'yup';
 
 export const getChatRoomsSchema = object({
-  take: number().required().positive(),
-  cursor: string()
+  take: number().positive().default(10),
+  after: string()
 });
 
 export const getMessagesSchema = object({
-  take: number().required().positive(),
-  cursor: string()
+  take: number().positive().default(10),
+  after: string()
 });
 
 export const addChatRoomSchema = object({

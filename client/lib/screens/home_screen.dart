@@ -43,12 +43,18 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class ChatRoomList extends ConsumerWidget {
+class ChatRoomList extends ConsumerStatefulWidget {
   const ChatRoomList({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatRoomList> createState() => _ChatRoomListState();
+}
+
+class _ChatRoomListState extends ConsumerState<ChatRoomList> {
+  @override
+  Widget build(BuildContext context) {
     final response = ref.watch(chatRoomsProvider);
+
     return response.when(
       data: (chatRooms) {
         if (chatRooms.isEmpty) {

@@ -43,33 +43,37 @@ class Repository {
     return ChatRoom.fromJson(response.data);
   }
 
-  Future<List<ChatRoom>> getChatRooms({
+  Future<ChatRoomsResponse> getChatRooms({
+    String? after,
+    int? take,
     CancelToken? cancelToken,
   }) async {
     var response = await _dio.get(
       "/chatrooms",
       cancelToken: cancelToken,
+      queryParameters: {
+        "take": take,
+        "after": after,
+      },
     );
-    return List<ChatRoom>.from(
-      response.data.map(
-        (item) => ChatRoom.fromJson(item),
-      ),
-    );
+    return ChatRoomsResponse.fromJson(response.data);
   }
 
-  Future<List<Message>> getMessages({
+  Future<MessagesResponse> getMessages({
     required String roomId,
+    String? after,
+    int? take,
     CancelToken? cancelToken,
   }) async {
     var response = await _dio.get(
       "/chatrooms/$roomId/messages",
       cancelToken: cancelToken,
+      queryParameters: {
+        "take": take,
+        "after": after,
+      },
     );
-    return List<Message>.from(
-      response.data.map(
-        (item) => Message.fromJson(item),
-      ),
-    );
+    return MessagesResponse.fromJson(response.data);
   }
 
   Future<ChatRoom> createChatRoom({

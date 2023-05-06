@@ -8,11 +8,18 @@ async function addChatRoom(input: { name: string }): Promise<ChatRoom> {
   return chatRoom;
 }
 
-async function getChatRooms(input: {
-  take: number;
-  cursor?: string;
-}): Promise<ChatRoom[]> {
-  return await repo.getChatRooms({ take: input.take, cursor: input.cursor });
+async function getChatRooms(input: { take: number; after?: string }) {
+  const chatRooms = await repo.getChatRooms({
+    take: input.take,
+    after: input.after
+  });
+  return {
+    pageInfo: {
+      hasNextPage: true,
+      cursor: ''
+    },
+    data: chatRooms
+  };
 }
 
 async function getChatRoom(input: { roomId: string }): Promise<ChatRoom> {
@@ -37,12 +44,12 @@ async function addMessage(input: {
 async function getMessages(input: {
   roomId: string;
   take: number;
-  cursor?: string;
+  after?: string;
 }) {
   return await repo.getMessages({
     roomId: input.roomId,
     take: input.take,
-    cursor: input.cursor
+    after: input.after
   });
 }
 

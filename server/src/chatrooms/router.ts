@@ -13,7 +13,7 @@ router.get('/', async (ctx) => {
   const data = await getChatRoomsSchema.validate(ctx.query);
   const chatRooms = await service.getChatRooms({
     take: data.take,
-    cursor: data.cursor
+    after: data.after
   });
   ctx.body = chatRooms;
 });
@@ -47,7 +47,7 @@ router.get('/:id/messages', async (ctx) => {
   const messages = await service.getMessages({
     roomId,
     take: data.take,
-    cursor: data.cursor
+    after: data.after
   });
   ctx.body = messages;
 });

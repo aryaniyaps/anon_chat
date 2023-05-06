@@ -12,7 +12,6 @@ async function addMessage(data: {
   userId: string;
   roomId: string;
 }): Promise<Message> {
-  // check if chatroom is valid
   return await prisma.message.create({
     data: {
       content: data.content,
@@ -25,31 +24,23 @@ async function addMessage(data: {
 async function getMessages(data: {
   roomId: string;
   take: number;
-  cursor?: string;
-}) {
-  // check if chatroom is valid
+  after?: string;
+}): Promise<Message[]> {
   return await prisma.message.findMany({
     take: data.take,
-    skip: data.cursor ? 1 : undefined,
-    cursor: {
-      id: data.cursor
-    },
-    where: { chatRoomId: data.roomId },
-    orderBy: [{ createdAt: 'desc' }]
+    where: { chatRoomId: data.roomId, id: { gt: data.after } },
+    orderBy: { createdAt: 'desc' }
   });
 }
 
 async function getChatRooms(data: {
   take: number;
-  cursor?: string;
+  after?: string;
 }): Promise<ChatRoom[]> {
   return await prisma.chatRoom.findMany({
     take: data.take,
-    skip: data.cursor ? 1 : undefined,
-    cursor: {
-      id: data.cursor
-    },
-    orderBy: [{ createdAt: 'desc' }]
+    where: { id: { gt: data.after } },
+    orderBy: { createdAt: 'desc' }
   });
 }
 

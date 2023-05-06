@@ -8,6 +8,7 @@ class MessagesNotifier extends StateNotifier<AsyncValue<List<Message>>> {
     required this.ref,
     required this.chatRoomId,
   }) : super(const AsyncLoading()) {
+    // load initial messages
     loadMessages();
   }
 
@@ -15,19 +16,20 @@ class MessagesNotifier extends StateNotifier<AsyncValue<List<Message>>> {
 
   final String chatRoomId;
 
-  Future<void> loadMessages() async {
+  Future<void> loadMessages({int? take, String? after}) async {
     // cancel the HTTP request if user leaves inbetween
     final cancelToken = CancelToken();
 
     ref.onDispose(cancelToken.cancel);
 
     final repo = ref.read(repositoryProvider);
-    state = AsyncValue.data(
-      await repo.getMessages(
-        cancelToken: cancelToken,
-        roomId: chatRoomId,
-      ),
+    final result = await repo.getMessages(
+      cancelToken: cancelToken,
+      roomId: chatRoomId,
+      take: take,
+      after: after,
     );
+    state = AsyncValue.data(result.data);
   }
 
   void addMessage(Message message) {
