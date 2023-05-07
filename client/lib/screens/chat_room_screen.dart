@@ -4,7 +4,6 @@ import 'package:anon_chat/providers/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
@@ -30,13 +29,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(chatRoom.name),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                // leave chatroom with ID
-                context.pop();
-              },
-            ),
           ),
           body: Column(
             children: <Widget>[
