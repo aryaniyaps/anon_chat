@@ -7,7 +7,7 @@ import 'package:anon_chat/providers/messages.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-final wsChannelProvider = Provider<WebSocketChannel>((ref) {
+final wsChannelProvider = Provider<void>((ref) {
   var channel = WebSocketChannel.connect(
     Uri.parse(
       const String.fromEnvironment("WS_URL"),
@@ -43,6 +43,4 @@ final wsChannelProvider = Provider<WebSocketChannel>((ref) {
   ref.onDispose(() {
     channel.sink.close();
   });
-
-  return channel;
 });

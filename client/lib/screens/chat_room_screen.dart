@@ -29,6 +29,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(chatRoom.name),
+            centerTitle: true,
           ),
           body: Column(
             children: <Widget>[
@@ -163,7 +164,7 @@ class _MessageListState extends ConsumerState<MessageList> {
                     Row(
                       children: [
                         CircleAvatar(
-                          radius: 6,
+                          radius: 6.5,
                           backgroundImage: NetworkImage(
                             "https://api.dicebear.com/6.x/identicon/png?seed=${message.userId}",
                           ),
