@@ -11,7 +11,7 @@ CREATE TABLE "ChatRoom" (
 CREATE TABLE "Message" (
     "id" TEXT NOT NULL,
     "chatRoomId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" VARCHAR(10) NOT NULL,
     "content" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
