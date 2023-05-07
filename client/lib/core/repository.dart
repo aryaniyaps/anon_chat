@@ -1,5 +1,6 @@
 import 'package:anon_chat/models/chatroom.dart';
 import 'package:anon_chat/models/message.dart';
+import 'package:anon_chat/models/user_info.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -30,6 +31,14 @@ class Repository {
         ),
       );
     });
+  }
+
+  Future<UserInfo> getUserInfo({CancelToken? cancelToken}) async {
+    var response = await _dio.get(
+      "/users/@me",
+      cancelToken: cancelToken,
+    );
+    return UserInfo.fromJson(response.data);
   }
 
   Future<ChatRoom> getChatRoom({

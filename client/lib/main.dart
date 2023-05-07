@@ -1,6 +1,7 @@
 import 'package:anon_chat/providers/ws_channel.dart';
 import 'package:anon_chat/screens/chat_room_screen.dart';
 import 'package:anon_chat/screens/home_screen.dart';
+import 'package:anon_chat/screens/user_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,6 +24,12 @@ class MyApp extends ConsumerWidget {
         path: "/",
         builder: (context, state) {
           return HomeScreen(key: state.pageKey);
+        },
+      ),
+      GoRoute(
+        path: "/user-info",
+        builder: (context, state) {
+          return UserInfoScreen(key: state.pageKey);
         },
       ),
       GoRoute(

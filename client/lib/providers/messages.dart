@@ -48,10 +48,7 @@ class MessagesNotifier extends StateNotifier<AsyncValue<MessagesState>> {
   }
 
   Future<void> loadMoreMessages({int? take}) async {
-    print("LOADING MORE MESSAGES");
     final value = state.requireValue;
-
-    print(value.pageInfo.hasNextPage);
 
     if (value.pageInfo.hasNextPage) {
       // cancel the HTTP request if user leaves inbetween

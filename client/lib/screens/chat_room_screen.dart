@@ -169,6 +169,15 @@ class _MessageListState extends ConsumerState<MessageList> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    CircleAvatar(
+                      radius: 6,
+                      backgroundImage: NetworkImage(
+                        "https://api.dicebear.com/6.x/identicon/png?seed=${message.userId}",
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Text(
                       message.userId,
                       style: Theme.of(context).textTheme.bodySmall,

@@ -23,7 +23,9 @@ class HomeScreen extends ConsumerWidget {
               Icons.account_circle,
               size: 35,
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.push("/user-info");
+            },
           ),
           const SizedBox(
             width: 10,

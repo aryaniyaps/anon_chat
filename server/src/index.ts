@@ -3,12 +3,13 @@ import { createServer, Server } from 'node:http';
 import Koa from 'koa';
 import WebSocket from 'ws';
 
-import router from './chatrooms/router';
+import chatRoomRouter from './chatrooms/router';
 import bodyParser from './core/middleware/body-parser';
 import errorHandler from './core/middleware/error-handler';
 import session from './core/middleware/session';
 import setUserId from './core/middleware/set-user-id';
 import { registerEvents } from './core/pubsub';
+import userRouter from './users/router';
 
 function main(): void {
   const app = createApp();
@@ -40,7 +41,8 @@ function registerMiddleware(app: Koa): void {
 }
 
 function registerRoutes(app: Koa): void {
-  app.use(router.routes()).use(router.allowedMethods());
+  app.use(userRouter.routes()).use(userRouter.allowedMethods());
+  app.use(chatRoomRouter.routes()).use(chatRoomRouter.allowedMethods());
 }
 
 main();
