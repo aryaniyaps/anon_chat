@@ -60,7 +60,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       ),
                       const SizedBox(width: 20),
                       TextFieldTapRegion(
-                        child: FloatingActionButton(
+                        child: IconButton(
                           onPressed: () async {
                             if (_formKey.currentState!.saveAndValidate()) {
                               final result = _formKey.currentState!.value;
@@ -79,12 +79,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               textField.requestFocus();
                             }
                           },
-                          // remove shadow
-                          elevation: 0,
-                          child: const Icon(
+                          icon: Icon(
                             Icons.send,
-                            color: Colors.white,
-                            size: 18,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 25.0,
                           ),
                         ),
                       )
