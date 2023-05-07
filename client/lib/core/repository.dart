@@ -41,6 +41,14 @@ class Repository {
     return UserInfo.fromJson(response.data);
   }
 
+  Future<UserInfo> regenUserId({CancelToken? cancelToken}) async {
+    var response = await _dio.post(
+      "/users/regen-id",
+      cancelToken: cancelToken,
+    );
+    return UserInfo.fromJson(response.data);
+  }
+
   Future<ChatRoom> getChatRoom({
     required String roomId,
     CancelToken? cancelToken,

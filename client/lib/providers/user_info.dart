@@ -3,18 +3,37 @@ import 'package:anon_chat/providers/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final userInfoProvider = FutureProvider.autoDispose<UserInfo>((ref) async {
-  // cancel the HTTP request if user leaves inbetween
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
+class UserInfoNotifier extends StateNotifier<AsyncValue<UserInfo>> {
+  UserInfoNotifier({required this.ref}) : super(const AsyncLoading()) {
+    // load user info
+    loadUserInfo();
+  }
 
-  final repo = ref.read(repositoryProvider);
+  final Ref ref;
 
-  final userInfo = await repo.getUserInfo(
-    cancelToken: cancelToken,
-  );
+  Future<void> loadUserInfo({int? take}) async {
+    // cancel the HTTP request if user leaves inbetween
+    final cancelToken = CancelToken();
+    ref.onDispose(cancelToken.cancel);
 
-  // cache user info
-  ref.keepAlive();
-  return userInfo;
+    final repo = ref.read(repositoryProvider);
+
+    state = AsyncValue.data(
+      await repo.getUserInfo(
+        cancelToken: cancelToken,
+      ),
+    );
+  }
+
+  Future<void> regenUserId({int? take}) async {
+    final repo = ref.read(repositoryProvider);
+
+    state = AsyncValue.data(await repo.regenUserId());
+  }
+}
+
+final userInfoProvider =
+    StateNotifierProvider.autoDispose<UserInfoNotifier, AsyncValue<UserInfo>>(
+        (ref) {
+  return UserInfoNotifier(ref: ref);
 });

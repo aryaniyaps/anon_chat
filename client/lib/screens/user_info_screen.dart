@@ -9,6 +9,8 @@ class UserInfoScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
 
+    final userInfoNotifier = ref.watch(userInfoProvider.notifier);
+
     return userInfo.when(
       data: (userInfo) {
         return Scaffold(
@@ -33,6 +35,25 @@ class UserInfoScreen extends ConsumerWidget {
                 Text(
                   userInfo.userId,
                   style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    userInfoNotifier.regenUserId();
+                  },
+                  child: const Text(
+                    "regenerate ID",
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "caution: you cannot get back your ID\nafter regeneration!",
+                  style: Theme.of(context).textTheme.labelSmall,
+                  textAlign: TextAlign.center,
                 )
               ],
             ),
