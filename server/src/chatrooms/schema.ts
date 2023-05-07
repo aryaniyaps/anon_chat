@@ -4,7 +4,7 @@ export const getChatRoomsSchema = object({
   // hack: "" is parsed to NaN
   limit: number()
     .transform((value) => (isNaN(value) ? undefined : value))
-    .default(10)
+    .default(25)
     .positive(),
   before: string()
 });
@@ -13,7 +13,7 @@ export const getMessagesSchema = object({
   // hack: "" is parsed to NaN
   limit: number()
     .transform((value) => (isNaN(value) ? undefined : value))
-    .default(10)
+    .default(25)
     .positive(),
   before: string()
 });
