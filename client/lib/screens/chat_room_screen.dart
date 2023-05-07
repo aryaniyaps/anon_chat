@@ -155,6 +155,42 @@ class _MessageListState extends ConsumerState<MessageList> {
           itemBuilder: (context, index) {
             if (index < messages.length) {
               var message = messages[index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 6,
+                          backgroundImage: NetworkImage(
+                            "https://api.dicebear.com/6.x/identicon/png?seed=${message.userId}",
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          message.userId,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(message.content),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      DateFormat.jm().format(message.createdAt),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              );
               return ListTile(
                 title: Text(message.content),
                 subtitle: Row(
