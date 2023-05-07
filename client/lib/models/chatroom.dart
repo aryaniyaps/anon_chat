@@ -24,10 +24,10 @@ class ChatRoom {
 
 @JsonSerializable()
 class ChatRoomsResponse {
-  List<ChatRoom> data;
+  List<ChatRoom> entities;
   PageInfo pageInfo;
 
-  ChatRoomsResponse({required this.data, required this.pageInfo});
+  ChatRoomsResponse({required this.entities, required this.pageInfo});
 
   factory ChatRoomsResponse.fromJson(Map<String, dynamic> json) {
     return _$ChatRoomsResponseFromJson(json);

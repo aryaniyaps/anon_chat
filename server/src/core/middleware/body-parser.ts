@@ -1,3 +1,5 @@
-import bodyParser from 'koa-bodyparser';
+import koaBodyParser from 'koa-bodyparser';
 
-export default bodyParser();
+const bodyParser = koaBodyParser();
+
+export default bodyParser;

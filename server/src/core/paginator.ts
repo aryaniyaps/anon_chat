@@ -5,14 +5,13 @@ interface PageInfo<T> {
 
 export interface PaginateArgs<T> {
   take: number;
-  cursor: { id: T | undefined };
-  skip?: number;
+  cursor?: { id: T };
+  skip: number | undefined;
 }
 
 export interface PaginateOpts<T> {
-  take: number;
-  cursor: T | undefined;
-  skip?: number;
+  limit: number;
+  before: T | undefined;
 }
 
 export interface Paginated<Model, T> {
@@ -24,31 +23,30 @@ export async function paginate<Model extends { id: T }, T>(
   findMany: (args: PaginateArgs<T>) => Promise<Model[]>,
   opts: PaginateOpts<T>
 ): Promise<Paginated<Model, T>> {
-  if (opts.take != null && opts.take < 0) {
-    throw new Error('take is less than 0');
-  }
   // fetch an extra entity to determine if the next page exists
-  const take = opts.take++;
+  const take = opts.limit + 1;
 
-  const skip = opts.cursor ? 1 : undefined;
+  const skip = opts.before ? 1 : undefined;
+
+  const cursor = opts.before ? { id: opts.before } : undefined;
 
   // load entities from database
-  const entities = await findMany({ cursor: { id: opts.cursor }, take, skip });
+  const entities = await findMany({ cursor, take, skip });
 
-  const hasNextPage = entities.length > opts.take;
+  const hasNextPage = entities.length > opts.limit;
 
-  let cursor = undefined;
+  let pagingCursor = undefined;
 
   if (hasNextPage) {
     // remove extra entity we fetched
     entities.pop();
-    cursor = entities[entities.length - 1].id;
+    pagingCursor = entities[entities.length - 1].id;
   }
 
   return {
     pageInfo: {
       hasNextPage,
-      cursor
+      cursor: pagingCursor
     },
     entities
   };

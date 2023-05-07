@@ -24,7 +24,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
 
 MessagesResponse _$MessagesResponseFromJson(Map<String, dynamic> json) =>
     MessagesResponse(
-      data: (json['data'] as List<dynamic>)
+      entities: (json['entities'] as List<dynamic>)
           .map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
       pageInfo: PageInfo.fromJson(json['pageInfo'] as Map<String, dynamic>),
@@ -32,6 +32,6 @@ MessagesResponse _$MessagesResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$MessagesResponseToJson(MessagesResponse instance) =>
     <String, dynamic>{
-      'data': instance.data,
+      'entities': instance.entities,
       'pageInfo': instance.pageInfo,
     };

@@ -16,7 +16,7 @@ class MessagesNotifier extends StateNotifier<AsyncValue<List<Message>>> {
 
   final String chatRoomId;
 
-  Future<void> loadMessages({int? take, String? after}) async {
+  Future<void> loadMessages({int? limit, String? before}) async {
     // cancel the HTTP request if user leaves inbetween
     final cancelToken = CancelToken();
 
@@ -26,10 +26,10 @@ class MessagesNotifier extends StateNotifier<AsyncValue<List<Message>>> {
     final result = await repo.getMessages(
       cancelToken: cancelToken,
       roomId: chatRoomId,
-      take: take,
-      after: after,
+      limit: limit,
+      before: before,
     );
-    state = AsyncValue.data(result.data);
+    state = AsyncValue.data(result.entities);
   }
 
   void addMessage(Message message) {

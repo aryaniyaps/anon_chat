@@ -20,7 +20,7 @@ Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
 
 ChatRoomsResponse _$ChatRoomsResponseFromJson(Map<String, dynamic> json) =>
     ChatRoomsResponse(
-      data: (json['data'] as List<dynamic>)
+      entities: (json['entities'] as List<dynamic>)
           .map((e) => ChatRoom.fromJson(e as Map<String, dynamic>))
           .toList(),
       pageInfo: PageInfo.fromJson(json['pageInfo'] as Map<String, dynamic>),
@@ -28,6 +28,6 @@ ChatRoomsResponse _$ChatRoomsResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ChatRoomsResponseToJson(ChatRoomsResponse instance) =>
     <String, dynamic>{
-      'data': instance.data,
+      'entities': instance.entities,
       'pageInfo': instance.pageInfo,
     };

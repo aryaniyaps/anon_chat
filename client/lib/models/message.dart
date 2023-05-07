@@ -28,10 +28,10 @@ class Message {
 
 @JsonSerializable()
 class MessagesResponse {
-  List<Message> data;
+  List<Message> entities;
   PageInfo pageInfo;
 
-  MessagesResponse({required this.data, required this.pageInfo});
+  MessagesResponse({required this.entities, required this.pageInfo});
 
   factory MessagesResponse.fromJson(Map<String, dynamic> json) {
     return _$MessagesResponseFromJson(json);

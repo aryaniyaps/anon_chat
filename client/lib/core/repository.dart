@@ -44,16 +44,16 @@ class Repository {
   }
 
   Future<ChatRoomsResponse> getChatRooms({
-    String? after,
-    int? take,
+    String? before,
+    int? limit,
     CancelToken? cancelToken,
   }) async {
     var response = await _dio.get(
       "/chatrooms",
       cancelToken: cancelToken,
       queryParameters: {
-        "take": take,
-        "after": after,
+        "limit": limit,
+        "before": before,
       },
     );
     return ChatRoomsResponse.fromJson(response.data);
@@ -61,16 +61,16 @@ class Repository {
 
   Future<MessagesResponse> getMessages({
     required String roomId,
-    String? after,
-    int? take,
+    String? before,
+    int? limit,
     CancelToken? cancelToken,
   }) async {
     var response = await _dio.get(
       "/chatrooms/$roomId/messages",
       cancelToken: cancelToken,
       queryParameters: {
-        "take": take,
-        "after": after,
+        "limit": limit,
+        "before": before,
       },
     );
     return MessagesResponse.fromJson(response.data);
