@@ -22,7 +22,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     final response = ref.watch(chatRoomProvider(widget.chatRoomId));
+
     final repo = ref.watch(repositoryProvider);
+
     return response.when(
       data: (chatRoom) {
         return Scaffold(
@@ -125,37 +127,72 @@ class MessageList extends ConsumerStatefulWidget {
 }
 
 class _MessageListState extends ConsumerState<MessageList> {
+  final _controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller.addListener(() {
+      final messagesNotifier =
+          ref.watch(messagesProvider(widget.chatRoomId).notifier);
+      if (_controller.position.maxScrollExtent == _controller.offset) {
+        messagesNotifier.loadMoreMessages();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final response = ref.watch(messagesProvider(widget.chatRoomId));
     return response.when(
-      data: (messages) {
+      data: (result) {
+        final messages = result.allMessages;
+
         return ListView.separated(
           reverse: true,
-          itemCount: messages.length,
-          physics: const ClampingScrollPhysics(),
+          controller: _controller,
+          itemCount: messages.length + 1,
+          physics: const AlwaysScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            var message = messages[index];
-            return ListTile(
-              title: Text(message.content),
-              subtitle: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    message.userId,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    DateFormat.jm().format(message.createdAt),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            );
+            if (index < messages.length) {
+              var message = messages[index];
+              return ListTile(
+                title: Text(message.content),
+                subtitle: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      message.userId,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      DateFormat.jm().format(message.createdAt),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              );
+            } else if (result.pageInfo.hasNextPage) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 32.0,
+                ),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           },
           separatorBuilder: (context, index) {
             return const Divider();
