@@ -4,6 +4,7 @@ import 'package:anon_chat/providers/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
@@ -51,10 +52,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         child: FormBuilderTextField(
                           name: "content",
                           maxLength: 250,
+                          validator: FormBuilderValidators.required(),
                           decoration: const InputDecoration(
                             hintText: "send a message",
                             border: InputBorder.none,
                             counterText: "",
+                            errorStyle: TextStyle(),
                           ),
                         ),
                       ),
@@ -62,19 +65,17 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       TextFieldTapRegion(
                         child: IconButton(
                           onPressed: () async {
-                            if (_formKey.currentState!.saveAndValidate()) {
-                              final result = _formKey.currentState!.value;
-                              final content = result["content"];
-                              if (content != null) {
-                                // todo: disable button instead when content is empty
-                                await repo.createMessage(
-                                  roomId: widget.chatRoomId,
-                                  content: result["content"],
-                                );
-                              }
+                            final state = _formKey.currentState!;
+
+                            if (state.isValid) {
+                              state.save();
+                              final result = state.value;
+                              await repo.createMessage(
+                                roomId: widget.chatRoomId,
+                                content: result["content"],
+                              );
                               // reset text field
-                              final textField =
-                                  _formKey.currentState!.fields["content"]!;
+                              final textField = state.fields["content"]!;
                               textField.reset();
                               textField.requestFocus();
                             }
