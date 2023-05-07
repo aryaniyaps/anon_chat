@@ -1,12 +1,20 @@
 import { number, object, string } from 'yup';
 
 export const getChatRoomsSchema = object({
-  take: number().positive().default(10),
+  // hack: "" is parsed to NaN
+  take: number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .default(10)
+    .positive(),
   after: string()
 });
 
 export const getMessagesSchema = object({
-  take: number().positive().default(10),
+  // hack: "" is parsed to NaN
+  take: number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .default(10)
+    .positive(),
   after: string()
 });
 

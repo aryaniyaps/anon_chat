@@ -13,7 +13,7 @@ router.get('/', async (ctx) => {
   const data = await getChatRoomsSchema.validate(ctx.query);
   const chatRooms = await service.getChatRooms({
     take: data.take,
-    after: data.after
+    cursor: data.after
   });
   ctx.body = chatRooms;
 });
@@ -44,11 +44,12 @@ router.post('/:id/messages', async (ctx) => {
 router.get('/:id/messages', async (ctx) => {
   const roomId = ctx.params.id;
   const data = await getChatRoomsSchema.validate(ctx.query);
-  const messages = await service.getMessages({
-    roomId,
-    take: data.take,
-    after: data.after
-  });
+  const messages = await service.getMessages(
+    {
+      roomId
+    },
+    { take: data.take, cursor: data.after }
+  );
   ctx.body = messages;
 });
 

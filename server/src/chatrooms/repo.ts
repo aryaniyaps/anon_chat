@@ -2,6 +2,7 @@ import type { ChatRoom, Message } from '@prisma/client';
 
 import { prisma } from '../core/database';
 import { ResourceNotFound } from '../core/errors';
+import { PaginateOpts, Paginated, paginate } from '../core/paginator';
 
 async function addChatRoom(data: { name: string }): Promise<ChatRoom> {
   return await prisma.chatRoom.create({ data });
@@ -21,27 +22,31 @@ async function addMessage(data: {
   });
 }
 
-async function getMessages(data: {
-  roomId: string;
-  take: number;
-  after?: string;
-}): Promise<Message[]> {
-  return await prisma.message.findMany({
-    take: data.take,
-    where: { chatRoomId: data.roomId, id: { gt: data.after } },
-    orderBy: { createdAt: 'desc' }
-  });
+async function getMessages(
+  data: {
+    roomId: string;
+  },
+  opts: PaginateOpts<string>
+): Promise<Paginated<Message, string>> {
+  return await paginate(
+    (args) =>
+      prisma.message.findMany({
+        ...args,
+        where: { chatRoomId: data.roomId },
+        orderBy: { createdAt: 'desc' }
+      }),
+    opts
+  );
 }
 
-async function getChatRooms(data: {
-  take: number;
-  after?: string;
-}): Promise<ChatRoom[]> {
-  return await prisma.chatRoom.findMany({
-    take: data.take,
-    where: { id: { gt: data.after } },
-    orderBy: { createdAt: 'desc' }
-  });
+async function getChatRooms(
+  opts: PaginateOpts<string>
+): Promise<Paginated<ChatRoom, string>> {
+  return await paginate(
+    (args) =>
+      prisma.chatRoom.findMany({ ...args, orderBy: { createdAt: 'desc' } }),
+    opts
+  );
 }
 
 async function getChatRoom(data: { roomId: string }): Promise<ChatRoom> {

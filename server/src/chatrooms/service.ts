@@ -1,4 +1,5 @@
 import type { ChatRoom, Message } from '@prisma/client';
+import { PaginateOpts } from '../core/paginator';
 import { publisher } from '../core/pubsub';
 import repo from './repo';
 
@@ -8,18 +9,8 @@ async function addChatRoom(input: { name: string }): Promise<ChatRoom> {
   return chatRoom;
 }
 
-async function getChatRooms(input: { take: number; after?: string }) {
-  const chatRooms = await repo.getChatRooms({
-    take: input.take,
-    after: input.after
-  });
-  return {
-    pageInfo: {
-      hasNextPage: true,
-      cursor: ''
-    },
-    data: chatRooms
-  };
+async function getChatRooms(opts: PaginateOpts<string>) {
+  return await repo.getChatRooms(opts);
 }
 
 async function getChatRoom(input: { roomId: string }): Promise<ChatRoom> {
@@ -41,16 +32,18 @@ async function addMessage(input: {
   return message;
 }
 
-async function getMessages(input: {
-  roomId: string;
-  take: number;
-  after?: string;
-}) {
-  return await repo.getMessages({
-    roomId: input.roomId,
-    take: input.take,
-    after: input.after
-  });
+async function getMessages(
+  input: {
+    roomId: string;
+  },
+  opts: PaginateOpts<string>
+) {
+  return await repo.getMessages(
+    {
+      roomId: input.roomId
+    },
+    opts
+  );
 }
 
 export default {
