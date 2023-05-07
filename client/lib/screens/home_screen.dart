@@ -20,15 +20,11 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(
-              Icons.account_circle,
-              size: 35,
+              Icons.settings,
             ),
             onPressed: () {
               context.push("/user-info");
             },
-          ),
-          const SizedBox(
-            width: 10,
           ),
         ],
       ),

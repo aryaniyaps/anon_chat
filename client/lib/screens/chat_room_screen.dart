@@ -69,7 +69,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
                             if (state.isValid) {
                               state.save();
-                              final result = state.value;
+                              final result = state!.value;
                               await repo.createMessage(
                                 roomId: widget.chatRoomId,
                                 content: result["content"],
@@ -203,7 +203,9 @@ class _MessageListState extends ConsumerState<MessageList> {
             }
           },
           separatorBuilder: (context, index) {
-            return const Divider();
+            return const SizedBox(
+              height: 10,
+            );
           },
         );
       },
