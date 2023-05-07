@@ -30,12 +30,15 @@ final wsChannelProvider = Provider<void>((ref) {
         break;
       case "messages:create":
         // add message
-        var roomId = content["data"]["chatRoomId"];
-        ref.read(messagesProvider(roomId).notifier).addMessage(
-              Message.fromJson(
-                content["data"],
-              ),
-            );
+        final roomId = content["data"]["chatRoomId"];
+
+        final roomNotifier = ref.read(messagesProvider(roomId).notifier);
+
+        roomNotifier.addMessage(
+          Message.fromJson(
+            content["data"],
+          ),
+        );
         break;
     }
   });

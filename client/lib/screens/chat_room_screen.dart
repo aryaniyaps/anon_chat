@@ -22,7 +22,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   Widget build(BuildContext context) {
     final response = ref.watch(chatRoomProvider(widget.chatRoomId));
 
-    final repo = ref.watch(repositoryProvider);
+    final repo = ref.read(repositoryProvider);
 
     return response.when(
       data: (chatRoom) {
@@ -184,35 +184,6 @@ class _MessageListState extends ConsumerState<MessageList> {
                     Text(message.content),
                     const SizedBox(
                       height: 5,
-                    ),
-                    Text(
-                      DateFormat.jm().format(message.createdAt),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              );
-              return ListTile(
-                title: Text(message.content),
-                subtitle: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 6,
-                      backgroundImage: NetworkImage(
-                        "https://api.dicebear.com/6.x/identicon/png?seed=${message.userId}",
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      message.userId,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(
-                      width: 10,
                     ),
                     Text(
                       DateFormat.jm().format(message.createdAt),

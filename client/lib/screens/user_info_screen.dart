@@ -9,7 +9,7 @@ class UserInfoScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
 
-    final userInfoNotifier = ref.watch(userInfoProvider.notifier);
+    final userInfoNotifier = ref.read(userInfoProvider.notifier);
 
     return userInfo.when(
       data: (userInfo) {
