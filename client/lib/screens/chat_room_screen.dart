@@ -19,11 +19,28 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
 class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  void sendMessage() async {
+    final repo = ref.read(repositoryProvider);
+
+    final state = _formKey.currentState!;
+
+    if (state.isValid) {
+      state.save();
+      final result = state.value;
+      await repo.createMessage(
+        roomId: widget.chatRoomId,
+        content: result["content"],
+      );
+      // reset text field
+      final textField = state.fields["content"]!;
+      textField.didChange("");
+      textField.requestFocus();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final response = ref.watch(chatRoomProvider(widget.chatRoomId));
-
-    final repo = ref.read(repositoryProvider);
 
     return response.when(
       data: (chatRoom) {
@@ -59,27 +76,17 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             counterText: "",
                             errorStyle: TextStyle(),
                           ),
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (_) {
+                            // send message when enter is pressed
+                            sendMessage();
+                          },
                         ),
                       ),
                       const SizedBox(width: 20),
                       TextFieldTapRegion(
                         child: IconButton(
-                          onPressed: () async {
-                            final state = _formKey.currentState!;
-
-                            if (state.isValid) {
-                              state.save();
-                              final result = state!.value;
-                              await repo.createMessage(
-                                roomId: widget.chatRoomId,
-                                content: result["content"],
-                              );
-                              // reset text field
-                              final textField = state.fields["content"]!;
-                              textField.reset();
-                              textField.requestFocus();
-                            }
-                          },
+                          onPressed: sendMessage,
                           icon: Icon(
                             Icons.send,
                             color: Theme.of(context).colorScheme.primary,

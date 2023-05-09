@@ -1,11 +1,11 @@
 import Redis from 'ioredis';
-import WebSocket, { WebSocketServer } from 'ws';
+import { Server, WebSocket } from 'ws';
 
 const publisher = new Redis(process.env.REDIS_URL!);
 
 const subscriber = publisher.duplicate();
 
-function registerEvents(ws: WebSocketServer): void {
+function registerSubscribers(ws: Server): void {
   subscriber.on('message', function (channel, message) {
     // message is JSON stringified
     // channel is the type of event
@@ -21,4 +21,4 @@ function registerEvents(ws: WebSocketServer): void {
   subscriber.subscribe('messages:create');
 }
 
-export { publisher, registerEvents };
+export { publisher, registerSubscribers };

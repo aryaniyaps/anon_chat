@@ -21,6 +21,7 @@ async function errorHandler(ctx: Context, next: Next) {
         message: error.message
       };
     } else {
+      console.log('SERVER ERROR', error);
       // 500 Internal Server Error
       ctx.status = 500;
       ctx.body = {

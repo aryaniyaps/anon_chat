@@ -181,13 +181,15 @@ class _CreateRoomFormState extends ConsumerState<CreateRoomForm> {
           const SizedBox(width: 20),
           ElevatedButton(
             onPressed: () async {
-              if (_formKey.currentState!.saveAndValidate()) {
-                var result = _formKey.currentState!.value;
+              final state = _formKey.currentState!;
+
+              if (state.saveAndValidate()) {
+                var result = state.value;
                 var chatRoom = await repo.createChatRoom(
                   name: result["name"],
                 );
                 // reset text field.
-                _formKey.currentState!.fields["name"]?.reset();
+                state.fields["name"]?.reset();
                 if (mounted) {
                   // close bottom modal
                   Navigator.pop(context);
