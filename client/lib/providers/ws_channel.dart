@@ -5,6 +5,7 @@ import 'package:anon_chat/models/message.dart';
 import 'package:anon_chat/providers/chatrooms.dart';
 import 'package:anon_chat/providers/messages.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 final wsChannelProvider = Provider<void>((ref) {
@@ -44,6 +45,6 @@ final wsChannelProvider = Provider<void>((ref) {
   });
 
   ref.onDispose(() {
-    channel.sink.close();
+    channel.sink.close(status.goingAway);
   });
 });

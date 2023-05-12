@@ -25,11 +25,3 @@ export const addChatRoomSchema = object({
 export const addMessageSchema = object({
   content: string().required().max(250)
 });
-
-export const joinChatRoomSchema = object({
-  roomId: string().required()
-});
-
-export const leaveChatRoomSchema = object({
-  roomId: string().required()
-});

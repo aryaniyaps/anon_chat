@@ -45,6 +45,8 @@ dependencies:
 
   web_socket_channel: ^2.4.0
 
+  crypto: ^3.0.3
+
   intl: ^0.17.0
 
   dio: ^5.1.1

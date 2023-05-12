@@ -1,3 +1,4 @@
+import 'package:anon_chat/core/color_generator.dart';
 import 'package:anon_chat/providers/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +35,11 @@ class UserInfoScreen extends ConsumerWidget {
                 ),
                 Text(
                   userInfo.userId,
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        color: colorFromUserId(
+                          userInfo.userId,
+                        ),
+                      ),
                 ),
                 const SizedBox(
                   height: 20,

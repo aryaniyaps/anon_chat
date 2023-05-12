@@ -5,7 +5,7 @@ import repo from './repo';
 
 async function addChatRoom(input: { name: string }): Promise<ChatRoom> {
   const chatRoom = await repo.addChatRoom({ name: input.name });
-  publisher.publish('chatrooms:create', JSON.stringify(chatRoom));
+  await publisher.publish('chatrooms:create', JSON.stringify(chatRoom));
   return chatRoom;
 }
 
@@ -28,7 +28,7 @@ async function addMessage(input: {
     userId: input.userId
   });
   // pub message
-  publisher.publish('messages:create', JSON.stringify(message));
+  await publisher.publish('messages:create', JSON.stringify(message));
   return message;
 }
 

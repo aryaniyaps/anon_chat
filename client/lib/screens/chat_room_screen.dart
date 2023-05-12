@@ -1,3 +1,4 @@
+import 'package:anon_chat/core/color_generator.dart';
 import 'package:anon_chat/providers/chatroom.dart';
 import 'package:anon_chat/providers/messages.dart';
 import 'package:anon_chat/providers/repository.dart';
@@ -129,19 +130,6 @@ class _MessageListState extends ConsumerState<MessageList> {
   final _controller = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-
-    _controller.addListener(() {
-      final messagesNotifier =
-          ref.watch(messagesProvider(widget.chatRoomId).notifier);
-      if (_controller.position.maxScrollExtent == _controller.offset) {
-        messagesNotifier.loadMoreMessages();
-      }
-    });
-  }
-
-  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -150,6 +138,7 @@ class _MessageListState extends ConsumerState<MessageList> {
   @override
   Widget build(BuildContext context) {
     final response = ref.watch(messagesProvider(widget.chatRoomId));
+
     return response.when(
       data: (result) {
         final messages = result.allMessages;
@@ -180,7 +169,12 @@ class _MessageListState extends ConsumerState<MessageList> {
                         ),
                         Text(
                           message.userId,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: colorFromUserId(
+                                      message.userId,
+                                    ),
+                                  ),
                         ),
                       ],
                     ),

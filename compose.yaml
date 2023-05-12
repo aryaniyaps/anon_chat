@@ -10,7 +10,7 @@ services:
       - PORT=3000
       - SECRET_KEY=secret
       - DATABASE_URL=postgresql://anon_chat:anon_chat@postgres:5432/anon_chat
-      - REDIS_URL=redis://:anon_chat@redis:6379/0
+      - REDIS_URL=redis://:anon_chat@redis:6379/
     ports:
       - "3000:3000"
     networks:
@@ -21,7 +21,7 @@ services:
 
   redis:
     image: bitnami/redis:7.0
-    restart: on-failure
+    restart: unless-stopped
     environment:
       - REDIS_PASSWORD=anon_chat
     ports:
@@ -33,7 +33,7 @@ services:
 
   postgres:
     image: bitnami/postgresql:12.14.0
-    restart: on-failure
+    restart: unless-stopped
     environment:
       - POSTGRESQL_USERNAME=anon_chat
       - POSTGRESQL_PASSWORD=anon_chat
