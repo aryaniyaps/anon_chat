@@ -15,6 +15,12 @@ class Repository {
         baseUrl: const String.fromEnvironment(
           "API_URL",
         ),
+        connectTimeout: const Duration(
+          milliseconds: 5000,
+        ),
+        receiveTimeout: const Duration(
+          milliseconds: 3000,
+        ),
       ),
     );
 
