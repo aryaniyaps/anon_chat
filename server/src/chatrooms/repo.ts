@@ -40,12 +40,14 @@ async function getMessages(
 }
 
 async function getChatRooms(
+  data: { search?: string },
   opts: PaginateOpts<string>
 ): Promise<Paginated<ChatRoom, string>> {
   return await paginate(
     (args) =>
       prisma.chatRoom.findMany({
         ...args,
+        where: { name: { search: data.search } },
         orderBy: { createdAt: 'desc' }
       }),
     opts

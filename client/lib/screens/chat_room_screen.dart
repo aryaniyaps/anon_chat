@@ -1,3 +1,4 @@
+import 'package:anon_chat/core/avatar_generator.dart';
 import 'package:anon_chat/core/color_generator.dart';
 import 'package:anon_chat/providers/chatroom.dart';
 import 'package:anon_chat/providers/messages.dart';
@@ -78,10 +79,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                 errorStyle: TextStyle(),
                               ),
                               textInputAction: TextInputAction.send,
-                              onSubmitted: (_) {
-                                // send message when enter is pressed
-                                sendMessage();
-                              },
                             ),
                           ),
                           const SizedBox(width: 20),
@@ -174,7 +171,7 @@ class _MessageListState extends ConsumerState<MessageList> {
                         CircleAvatar(
                           radius: 6.5,
                           backgroundImage: NetworkImage(
-                            "https://api.dicebear.com/6.x/identicon/png?seed=${message.userId}",
+                            avatarFromUserId(message.userId),
                           ),
                         ),
                         const SizedBox(
@@ -182,12 +179,11 @@ class _MessageListState extends ConsumerState<MessageList> {
                         ),
                         Text(
                           message.userId,
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: colorFromUserId(
-                                      message.userId,
-                                    ),
-                                  ),
+                          style: TextStyle(
+                            color: colorFromUserId(message.userId),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
                         ),
                       ],
                     ),

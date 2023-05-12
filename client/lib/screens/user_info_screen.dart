@@ -1,3 +1,4 @@
+import 'package:anon_chat/core/avatar_generator.dart';
 import 'package:anon_chat/core/color_generator.dart';
 import 'package:anon_chat/providers/user_info.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class UserInfoScreen extends ConsumerWidget {
                 CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                    "https://api.dicebear.com/6.x/identicon/png?seed=${userInfo.userId}",
+                    avatarFromUserId(userInfo.userId),
                   ),
                 ),
                 const SizedBox(

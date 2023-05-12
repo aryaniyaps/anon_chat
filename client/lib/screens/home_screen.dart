@@ -17,7 +17,13 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Anonymous chat"),
+        title: GestureDetector(
+          onTap: () {
+            context.push("/chatroom");
+          },
+          child: const Text("Anonymous chat"),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(
@@ -29,11 +35,39 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        child: const ChatRoomList(),
-        onRefresh: () async {
-          chatRoomsNotifier.loadInitialChatRooms();
-        },
+      body: Column(
+        children: [
+          Container(
+            color: Theme.of(context).colorScheme.inversePrimary,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                maxLength: 50,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  hintText: "search for chatrooms...",
+                  border: InputBorder.none,
+                  counterText: "",
+                  suffixIcon: const Icon(
+                    Icons.search,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              child: const ChatRoomList(),
+              onRefresh: () async {
+                chatRoomsNotifier.loadInitialChatRooms();
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -124,7 +158,9 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
             }
           },
           separatorBuilder: (context, index) {
-            return const Divider();
+            return const Divider(
+              thickness: 0.4,
+            );
           },
         );
       },

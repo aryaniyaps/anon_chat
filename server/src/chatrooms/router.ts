@@ -12,10 +12,13 @@ const router = new Router({ prefix: '/chatrooms' });
 
 router.get('/', async (ctx) => {
   const data = await getChatRoomsSchema.validate(ctx.request.query);
-  const chatRooms = await service.getChatRooms({
-    limit: data.limit,
-    before: data.before
-  });
+  const chatRooms = await service.getChatRooms(
+    { search: data.search },
+    {
+      limit: data.limit,
+      before: data.before
+    }
+  );
   ctx.body = chatRooms;
 });
 

@@ -9,8 +9,11 @@ async function addChatRoom(input: { name: string }): Promise<ChatRoom> {
   return chatRoom;
 }
 
-async function getChatRooms(opts: PaginateOpts<string>) {
-  return await repo.getChatRooms(opts);
+async function getChatRooms(
+  input: { search?: string },
+  opts: PaginateOpts<string>
+) {
+  return await repo.getChatRooms(input, opts);
 }
 
 async function getChatRoom(input: { roomId: string }): Promise<ChatRoom> {

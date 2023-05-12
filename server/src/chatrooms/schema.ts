@@ -6,7 +6,8 @@ export const getChatRoomsSchema = object({
     .transform((value) => (isNaN(value) ? undefined : value))
     .default(25)
     .positive(),
-  before: string()
+  before: string(),
+  search: string().max(50)
 });
 
 export const getMessagesSchema = object({

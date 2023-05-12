@@ -52,6 +52,12 @@ class MyApp extends ConsumerWidget {
       title: 'Anonymous Chat',
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
+      theme: ThemeData.from(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepOrange,
+        ),
+      ),
     );
   }
 }
