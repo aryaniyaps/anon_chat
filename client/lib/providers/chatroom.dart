@@ -3,6 +3,8 @@ import 'package:anon_chat/providers/repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final selectedChatRoomId = StateProvider<String?>((ref) => null);
+
 final chatRoomProvider =
     FutureProvider.autoDispose.family<ChatRoom, String>((ref, roomId) async {
   // cancel the HTTP request if user leaves inbetween

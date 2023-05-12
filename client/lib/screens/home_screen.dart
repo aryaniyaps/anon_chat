@@ -1,3 +1,4 @@
+import 'package:anon_chat/providers/chatroom.dart';
 import 'package:anon_chat/providers/chatrooms.dart';
 import 'package:anon_chat/providers/repository.dart';
 import 'package:flutter/material.dart';
@@ -96,8 +97,9 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
               var chatRoom = chatRooms[index];
               return InkWell(
                 onTap: () {
-                  // join chatroom with ID
-                  context.push("/chatrooms/${chatRoom.id}");
+                  // set current chatroom ID
+                  ref.read(selectedChatRoomId.notifier).state = chatRoom.id;
+                  context.push("/chatroom");
                 },
                 child: ListTile(
                   contentPadding: const EdgeInsets.only(left: 16.0),
@@ -160,7 +162,7 @@ class _CreateRoomFormState extends ConsumerState<CreateRoomForm> {
 
   @override
   Widget build(BuildContext context) {
-    final repo = ref.watch(repositoryProvider);
+    final repo = ref.read(repositoryProvider);
     return FormBuilder(
       key: _formKey,
       child: Row(
@@ -193,8 +195,10 @@ class _CreateRoomFormState extends ConsumerState<CreateRoomForm> {
                 if (mounted) {
                   // close bottom modal
                   Navigator.pop(context);
-                  //  navigate to chatroom
-                  context.push("/chatrooms/${chatRoom.id}");
+
+                  // set current chatroom ID
+                  ref.read(selectedChatRoomId.notifier).state = chatRoom.id;
+                  context.push("/chatroom");
                 }
               }
             },

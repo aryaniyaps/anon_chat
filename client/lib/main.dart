@@ -33,11 +33,10 @@ class MyApp extends ConsumerWidget {
         },
       ),
       GoRoute(
-        path: "/chatrooms/:id",
+        path: "/chatroom",
         builder: (context, state) {
           return ChatRoomScreen(
             key: state.pageKey,
-            chatRoomId: state.params["id"]!,
           );
         },
       ),
