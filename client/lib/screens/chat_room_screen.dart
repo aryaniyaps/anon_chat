@@ -44,73 +44,75 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   Widget build(BuildContext context) {
     final id = ref.watch(selectedChatRoomId)!;
 
-    return ref.watch(chatRoomProvider(id)).when(
-          data: (chatRoom) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(chatRoom.name),
-                centerTitle: true,
-              ),
-              body: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: MessageList(
-                      key: widget.key,
-                      chatRoomId: id,
-                    ),
-                  ),
-                  FormBuilder(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: FormBuilderTextField(
-                              name: "content",
-                              maxLength: 250,
-                              validator: FormBuilderValidators.required(),
-                              decoration: const InputDecoration(
-                                hintText: "send a message",
-                                border: InputBorder.none,
-                                counterText: "",
-                                errorStyle: TextStyle(),
-                              ),
-                              textInputAction: TextInputAction.send,
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          TextFieldTapRegion(
-                            child: IconButton(
-                              onPressed: sendMessage,
-                              icon: Icon(
-                                Icons.send,
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 25.0,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-          error: (error, stack) => Scaffold(
-            body: Center(
-              child: Text(
-                error.toString(),
-              ),
-            ),
+    final response = ref.watch(chatRoomProvider(id));
+
+    return response.when(
+      data: (chatRoom) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(chatRoom.name),
+            centerTitle: true,
           ),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+          body: Column(
+            children: <Widget>[
+              Expanded(
+                child: MessageList(
+                  key: widget.key,
+                  chatRoomId: id,
+                ),
+              ),
+              FormBuilder(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: FormBuilderTextField(
+                          name: "content",
+                          maxLength: 250,
+                          validator: FormBuilderValidators.required(),
+                          decoration: const InputDecoration(
+                            hintText: "send a message",
+                            border: InputBorder.none,
+                            counterText: "",
+                            errorStyle: TextStyle(),
+                          ),
+                          textInputAction: TextInputAction.send,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      TextFieldTapRegion(
+                        child: IconButton(
+                          onPressed: sendMessage,
+                          icon: Icon(
+                            Icons.send,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 25.0,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
           ),
         );
+      },
+      error: (error, stack) => Scaffold(
+        body: Center(
+          child: Text(
+            error.toString(),
+          ),
+        ),
+      ),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }
 
@@ -152,6 +154,12 @@ class _MessageListState extends ConsumerState<MessageList> {
     return response.when(
       data: (result) {
         final messages = result.allMessages;
+
+        if (messages.isEmpty) {
+          return const Center(
+            child: Text("be the first to send a message!"),
+          );
+        }
 
         return ListView.separated(
           reverse: true,
