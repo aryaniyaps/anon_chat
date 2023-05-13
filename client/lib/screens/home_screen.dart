@@ -156,6 +156,7 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
                 ),
               );
             }
+            return null;
           },
           separatorBuilder: (context, index) {
             return const Divider(

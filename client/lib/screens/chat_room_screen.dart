@@ -219,6 +219,8 @@ class _MessageListState extends ConsumerState<MessageList> {
                 ),
               );
             }
+
+            return null;
           },
           separatorBuilder: (context, index) {
             return const SizedBox(
