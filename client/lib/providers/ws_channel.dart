@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:anon_chat/models/chatroom.dart';
 import 'package:anon_chat/models/message.dart';
-import 'package:anon_chat/providers/chatrooms.dart';
 import 'package:anon_chat/providers/messages.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:web_socket_channel/status.dart' as status;
@@ -15,20 +13,10 @@ final wsChannelProvider = Provider<void>((ref) {
     ),
   );
 
-  final chatRoomsNotifier = ref.read(chatRoomsProvider.notifier);
-
   channel.stream.listen((message) {
     var content = jsonDecode(message);
 
     switch (content["type"]) {
-      case "chatrooms:create":
-        // add chatroom
-        chatRoomsNotifier.addChatRoom(
-          ChatRoom.fromJson(
-            content["data"],
-          ),
-        );
-        break;
       case "messages:create":
         // add message
         final roomId = content["data"]["chatRoomId"];

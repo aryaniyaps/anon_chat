@@ -9,7 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,17 +43,24 @@ class HomeScreen extends ConsumerWidget {
             color: Theme.of(context).colorScheme.inversePrimary,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                maxLength: 50,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).colorScheme.surface,
-                  hintText: "search for chatrooms...",
-                  border: InputBorder.none,
-                  counterText: "",
-                  suffixIcon: const Icon(
-                    Icons.search,
+              child: FormBuilder(
+                key: _formKey,
+                child: TextField(
+                  maxLength: 50,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    hintText: "search chatrooms...",
+                    border: InputBorder.none,
+                    counterText: "",
+                    suffixIcon: const Icon(
+                      Icons.search,
+                    ),
                   ),
+                  onChanged: (value) {
+                    // update chatroom search text
+                    ref.read(chatRoomSearchTextProvider.notifier).state = value;
+                  },
                 ),
               ),
             ),

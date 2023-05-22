@@ -67,6 +67,7 @@ class Repository {
   }
 
   Future<ChatRoomsResponse> getChatRooms({
+    String? search,
     String? before,
     int? limit,
     CancelToken? cancelToken,
@@ -74,9 +75,10 @@ class Repository {
     var response = await _dio.get(
       "/chatrooms",
       cancelToken: cancelToken,
-      queryParameters: {
-        "limit": limit,
-        "before": before,
+      queryParameters: <String, Object?>{
+        if (limit != null) "limit": limit,
+        if (search != null) "search": search,
+        if (before != null) "before": before,
       },
     );
     return ChatRoomsResponse.fromJson(response.data);
@@ -91,9 +93,9 @@ class Repository {
     var response = await _dio.get(
       "/chatrooms/$roomId/messages",
       cancelToken: cancelToken,
-      queryParameters: {
-        "limit": limit,
-        "before": before,
+      queryParameters: <String, Object?>{
+        if (limit != null) "limit": limit,
+        if (before != null) "before": before,
       },
     );
     return MessagesResponse.fromJson(response.data);

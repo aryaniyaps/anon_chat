@@ -22,7 +22,7 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<ChatRoomsState>> {
 
   final Ref ref;
 
-  Future<void> loadInitialChatRooms({int? take}) async {
+  Future<void> loadInitialChatRooms({int? take, String? search}) async {
     // cancel the HTTP request if user leaves inbetween
     final cancelToken = CancelToken();
 
@@ -30,9 +30,12 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<ChatRoomsState>> {
 
     final repo = ref.read(repositoryProvider);
 
+    final search = ref.watch(chatRoomSearchTextProvider);
+
     final result = await repo.getChatRooms(
       limit: take,
       cancelToken: cancelToken,
+      search: search,
     );
 
     state = AsyncValue.data(
@@ -43,7 +46,7 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<ChatRoomsState>> {
     );
   }
 
-  Future<void> loadMoreChatRooms({int? take}) async {
+  Future<void> loadMoreChatRooms({int? take, String? search}) async {
     final value = state.requireValue;
 
     if (value.pageInfo.hasNextPage) {
@@ -58,6 +61,7 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<ChatRoomsState>> {
         limit: take,
         before: value.pageInfo.cursor,
         cancelToken: cancelToken,
+        search: search,
       );
 
       state = AsyncValue.data(
@@ -68,19 +72,11 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<ChatRoomsState>> {
       );
     }
   }
-
-  void addChatRoom(ChatRoom chatRoom) {
-    final value = state.requireValue;
-    state = AsyncValue.data(
-      ChatRoomsState(
-        allChatRooms: [chatRoom, ...value.allChatRooms],
-        pageInfo: value.pageInfo,
-      ),
-    );
-  }
 }
 
 final chatRoomsProvider = StateNotifierProvider.autoDispose<ChatRoomsNotifier,
     AsyncValue<ChatRoomsState>>((ref) {
   return ChatRoomsNotifier(ref: ref);
 });
+
+final chatRoomSearchTextProvider = StateProvider<String?>((ref) => null);

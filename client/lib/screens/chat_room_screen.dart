@@ -35,8 +35,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       );
       // reset text field
       final textField = state.fields["content"]!;
-      textField.didChange("");
-      textField.requestFocus();
+      textField.reset();
     }
   }
 

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.anon_chat">
+    
    <application
         android:label="anon_chat"
         android:name="${applicationName}"

@@ -17,7 +17,6 @@ function registerSubscribers(ws: Server): void {
     });
     ws.emit(channel, content);
   });
-  subscriber.subscribe('chatrooms:create');
   subscriber.subscribe('messages:create');
 }
 

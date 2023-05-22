@@ -4,9 +4,7 @@ import { publisher } from '../core/pubsub';
 import repo from './repo';
 
 async function addChatRoom(input: { name: string }): Promise<ChatRoom> {
-  const chatRoom = await repo.addChatRoom({ name: input.name });
-  await publisher.publish('chatrooms:create', JSON.stringify(chatRoom));
-  return chatRoom;
+  return await repo.addChatRoom({ name: input.name });
 }
 
 async function getChatRooms(
