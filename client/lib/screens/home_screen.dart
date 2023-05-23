@@ -59,7 +59,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   onChanged: (value) {
                     // update chatroom search text
-                    ref.read(chatRoomSearchTextProvider.notifier).state = value;
+                    ref.read(searchTextProvider.notifier).state = value;
                   },
                 ),
               ),
@@ -72,7 +72,7 @@ class HomeScreen extends ConsumerWidget {
             child: RefreshIndicator(
               child: const ChatRoomList(),
               onRefresh: () async {
-                chatRoomsNotifier.loadInitialChatRooms();
+                chatRoomsNotifier.loadChatRooms();
               },
             ),
           ),
@@ -108,7 +108,7 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
 
     _controller.addListener(() {
       if (_controller.position.maxScrollExtent == _controller.offset) {
-        ref.read(chatRoomsProvider.notifier).loadMoreChatRooms();
+        ref.read(chatRoomsProvider.notifier).loadChatRooms();
       }
     });
   }
@@ -123,9 +123,10 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
   Widget build(BuildContext context) {
     final response = ref.watch(chatRoomsProvider);
 
+    final chatRoomsNotifier = ref.read(chatRoomsProvider.notifier);
+
     return response.when(
-      data: (result) {
-        final chatRooms = result.allChatRooms;
+      data: (chatRooms) {
         if (chatRooms.isEmpty) {
           return const Center(
             child: Text("no rooms created."),
@@ -155,7 +156,7 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
                   ),
                 ),
               );
-            } else if (result.pageInfo.hasNextPage) {
+            } else if (chatRoomsNotifier.pageInfo.hasNextPage) {
               return const Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 32.0,
@@ -209,6 +210,9 @@ class _CreateRoomFormState extends ConsumerState<CreateRoomForm> {
   @override
   Widget build(BuildContext context) {
     final repo = ref.read(repositoryProvider);
+
+    final chatRoomsNotifier = ref.read(chatRoomsProvider.notifier);
+
     return FormBuilder(
       key: _formKey,
       child: Row(
@@ -238,6 +242,10 @@ class _CreateRoomFormState extends ConsumerState<CreateRoomForm> {
                 );
                 // reset text field.
                 state.fields["name"]?.reset();
+
+                // add chatroom to local state
+                chatRoomsNotifier.addChatRoom(chatRoom);
+
                 if (mounted) {
                   // close bottom modal
                   Navigator.pop(context);

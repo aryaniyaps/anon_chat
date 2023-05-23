@@ -135,7 +135,7 @@ class _MessageListState extends ConsumerState<MessageList> {
       final messagesNotifier =
           ref.watch(messagesProvider(widget.chatRoomId).notifier);
       if (_controller.position.maxScrollExtent == _controller.offset) {
-        messagesNotifier.loadMoreMessages();
+        messagesNotifier.loadMessages();
       }
     });
   }
@@ -150,10 +150,11 @@ class _MessageListState extends ConsumerState<MessageList> {
   Widget build(BuildContext context) {
     final response = ref.watch(messagesProvider(widget.chatRoomId));
 
-    return response.when(
-      data: (result) {
-        final messages = result.allMessages;
+    final messagesNotifer =
+        ref.read(messagesProvider(widget.chatRoomId).notifier);
 
+    return response.when(
+      data: (messages) {
         if (messages.isEmpty) {
           return const Center(
             child: Text("be the first to send a message!"),
@@ -208,7 +209,7 @@ class _MessageListState extends ConsumerState<MessageList> {
                   ],
                 ),
               );
-            } else if (result.pageInfo.hasNextPage) {
+            } else if (messagesNotifer.pageInfo.hasNextPage) {
               return const Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 32.0,
