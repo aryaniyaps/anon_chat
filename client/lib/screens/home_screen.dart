@@ -72,6 +72,7 @@ class HomeScreen extends ConsumerWidget {
             child: RefreshIndicator(
               child: const ChatRoomList(),
               onRefresh: () async {
+                chatRoomsNotifier.reset();
                 chatRoomsNotifier.loadChatRooms();
               },
             ),

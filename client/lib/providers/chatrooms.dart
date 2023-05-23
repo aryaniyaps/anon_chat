@@ -17,6 +17,11 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<List<ChatRoom>>> {
     cursor: null,
   );
 
+  void reset() {
+    pageInfo = PageInfo(hasNextPage: true, cursor: null);
+    state = const AsyncLoading();
+  }
+
   Future<void> loadChatRooms({int? take, String? search}) async {
     // cancel the HTTP request if user leaves inbetween
     final cancelToken = CancelToken();

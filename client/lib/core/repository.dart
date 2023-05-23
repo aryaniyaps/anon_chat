@@ -25,18 +25,20 @@ class Repository {
     );
 
     // add cookie manager
-    getApplicationDocumentsDirectory().then((docsDir) {
-      _dio.interceptors.add(
-        CookieManager(
-          PersistCookieJar(
-            ignoreExpires: true,
-            storage: FileStorage(
-              "${docsDir.path}/.cookies/",
+    getApplicationDocumentsDirectory().then(
+      (docsDir) {
+        _dio.interceptors.add(
+          CookieManager(
+            PersistCookieJar(
+              ignoreExpires: true,
+              storage: FileStorage(
+                "${docsDir.path}/.cookies/",
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Future<UserInfo> getUserInfo({CancelToken? cancelToken}) async {
