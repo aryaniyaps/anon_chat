@@ -79,7 +79,7 @@ class Repository {
       cancelToken: cancelToken,
       queryParameters: <String, Object?>{
         if (limit != null) "limit": limit,
-        if (search != null) "search": search,
+        if (search != null && search != "") "search": search,
         if (before != null) "before": before,
       },
     );

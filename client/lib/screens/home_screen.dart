@@ -130,7 +130,7 @@ class _ChatRoomListState extends ConsumerState<ChatRoomList> {
       data: (chatRooms) {
         if (chatRooms.isEmpty) {
           return const Center(
-            child: Text("no rooms created."),
+            child: Text("no rooms found."),
           );
         }
         return ListView.separated(

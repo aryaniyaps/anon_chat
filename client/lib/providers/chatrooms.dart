@@ -5,12 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatRoomsNotifier extends StateNotifier<AsyncValue<List<ChatRoom>>> {
-  ChatRoomsNotifier({required this.ref}) : super(const AsyncLoading()) {
+  ChatRoomsNotifier({required this.ref, required this.search})
+      : super(const AsyncLoading()) {
     // load initial chatrooms
     loadChatRooms();
   }
 
   final Ref ref;
+
+  final String? search;
 
   PageInfo pageInfo = PageInfo(
     hasNextPage: true,
@@ -22,19 +25,16 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<List<ChatRoom>>> {
     state = const AsyncLoading();
   }
 
-  Future<void> loadChatRooms({int? take, String? search}) async {
+  Future<void> loadChatRooms() async {
     // cancel the HTTP request if user leaves inbetween
     final cancelToken = CancelToken();
 
-    ref.onDispose(cancelToken.cancel);
+    // ref.onDispose(cancelToken.cancel);
 
     if (pageInfo.hasNextPage) {
       final repo = ref.read(repositoryProvider);
 
-      final search = ref.watch(searchTextProvider);
-
       final result = await repo.getChatRooms(
-        limit: take,
         cancelToken: cancelToken,
         search: search,
         before: pageInfo.cursor,
@@ -55,7 +55,8 @@ class ChatRoomsNotifier extends StateNotifier<AsyncValue<List<ChatRoom>>> {
 
 final chatRoomsProvider = StateNotifierProvider.autoDispose<ChatRoomsNotifier,
     AsyncValue<List<ChatRoom>>>((ref) {
-  return ChatRoomsNotifier(ref: ref);
+  final search = ref.watch(searchTextProvider);
+  return ChatRoomsNotifier(ref: ref, search: search);
 });
 
 final searchTextProvider = StateProvider<String?>((ref) => null);

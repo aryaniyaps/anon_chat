@@ -47,7 +47,7 @@ async function getChatRooms(
     (args) =>
       prisma.chatRoom.findMany({
         ...args,
-        where: { name: { search: data.search } },
+        where: { name: { contains: data.search } },
         orderBy: { createdAt: 'desc' }
       }),
     opts
